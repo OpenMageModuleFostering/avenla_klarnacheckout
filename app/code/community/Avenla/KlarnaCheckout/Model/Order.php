@@ -264,7 +264,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             $taxClasses  = Mage::helper("core")->jsonDecode(Mage::helper("tax")->getAllRatesByProductClass());
             if(isset($taxClasses["value_".$taxClass]))
 				$taxRate = $taxClasses["value_".$taxClass];
-            
+
 			$shippingCosts = array(
 				'type' 			=> 'shipping_fee',
 				'reference' 	=> 'shipping_fee',

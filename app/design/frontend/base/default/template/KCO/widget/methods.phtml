@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * This file is released under a custom license by Avenla Oy.
  * All rights reserved
@@ -18,15 +18,11 @@
  * @category   Avenla
  * @package    Avenla_KlarnaCheckout
  */
-class Avenla_KlarnaCheckout_Adminhtml_KCOController extends Mage_Adminhtml_Controller_Action
-{
-	/**
-	 *	Update Klarna PClasses
-	 *
-	 */
-    public function updatePClassesAction()
-    {
-    	$result = Mage::getModel('klarnaCheckout/api')->updatePClasses();
-        Mage::app()->getResponse()->setBody($result);
-    }
-}
+?>
+<div class="klarna-widget klarna-badge-tooltip"
+    data-eid="<?php echo Mage::getModel('klarnaCheckout/config')->getKlarnaEid(); ?>"
+    data-locale="<?php echo $this->getLocale(); ?>"
+    data-badge-name="<?php echo $this->getData('methodslayout'); ?>-<?php echo $this->getData('color') ?>"
+    data-badge-width="<?php echo $this->getWidth(); ?>"
+    data-layout="<?php echo $this->getData('tooltiplayout'); ?>">
+</div>

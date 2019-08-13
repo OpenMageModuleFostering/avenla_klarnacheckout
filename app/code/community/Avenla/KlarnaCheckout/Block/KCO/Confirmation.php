@@ -37,8 +37,9 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
         $order->fetch();
         $result = "";
         
-        if(Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsNo() !== false && isset($_SESSION['klarna_checkout']))
-            $result .= $this->getGoogleCode($order);
+        if(Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsNo() !== false && isset($_SESSION['klarna_checkout'])){
+            $result .= $this->getAnalyticsCode($order);
+        }
 
 		$result .= $order['gui']['snippet'];
 		
@@ -53,16 +54,33 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
         return $result;
 	}
     
-	/**
+    /**
      *  Get Google Analytics Ecommerce tracking code
      *
-	 *	@param		Klarna_Checkout_Order $ko
-     *  @return		string
+     *  @param      Klarna_Checkout_Order $ko
+     *  @return     string
      */
-    private function getGoogleCode($ko)
+    private function getAnalyticsCode($ko)
     {
-		if(count($ko['cart']['items']) < 1)
-			return;
+        $type = Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsType();
+        $orderId = false;
+
+        if(strlen($ko['merchant_reference']['orderid2']) > 0){
+            $mo = Mage::getModel('sales/order')->load($ko['merchant_reference']['orderid1'], 'increment_id');
+            if($mo->getId()){
+                $orderId = $ko['merchant_reference']['orderid1'];
+            }
+        }
+
+        if(!$orderId){
+            $quote = Mage::getModel('sales/quote')->load($ko['merchant_reference']['orderid1']);
+            $quote->reserveOrderId();
+            $quote->save();
+            $orderId = $quote->getReservedOrderId();
+        }
+
+        if(count($ko['cart']['items']) < 1)
+            return;
 
         foreach($ko['cart']['items'] as $p){
             $shipping_fee = "";
@@ -70,26 +88,47 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
                 $shipping_fee = $p['total_price_including_tax'];
         }
 
+        if($type == Avenla_KlarnaCheckout_Model_Config::ANALYTICS_UNIVERSAL){
+            return $this->getUniversalAnalyticsCode($ko, $shipping_fee, $orderId);
+        }
+        else{
+            return $this->getClassicAnalyticsCode($ko, $shipping_fee, $orderId);
+        }
+    }
+
+	/**
+     *  Get classic Google Analytics Ecommerce tracking code
+     *
+	 *	@param		Klarna_Checkout_Order $ko
+     *  @param      string $shipping_fee
+     *  @param      string $orderId
+     *  @return		string
+     */
+    private function getClassicAnalyticsCode($ko, $shipping_fee, $orderId)
+    {
+
+        $gc = '<script type="text/javascript">';
+        $gc .= "//<![CDATA[\n";
         $gc .= 'var _gaq = _gaq || [];';
         $gc .= '_gaq.push(["_setAccount", "' . Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsNo() . '"]);';
-        $gc .= '_gaq.push(["_trackPageview"]);';
-        $gc .= '_gaq.push(["_addTrans",';
-        $gc .= '"' . $ko['merchant_reference']['orderid1'] . '",';
-        $gc .= '"' . Mage::app()->getStore()->getName() . '",';
-        $gc .= '"' . $ko['cart']['total_price_including_tax'] / 100 . '",';
-        $gc .= '"' . $ko['cart']['total_tax_amount'] / 100 . '",';
-        $gc .= '"' . $shipping_fee / 100 . '",';
-        $gc .= '"' . $ko['billing_address']['city'] . '",';
-        $gc .= '"",' ;
-        $gc .= '"' . $ko['billing_address']['country'] . '"';
-        $gc .= ']);' . "\n";
-        
+
+        $gc .= sprintf("_gaq.push(['_addTrans', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']);",
+            $orderId,
+            Mage::app()->getStore()->getName(),
+            $ko['cart']['total_price_including_tax'] / 100,
+            $ko['cart']['total_tax_amount'] / 100,
+            $shipping_fee / 100,
+            $ko['billing_address']['city'],
+            null,
+            $ko['billing_address']['country']
+        );
+
         foreach ($ko['cart']['items'] as $p){
 
-			if($p['type'] == 'shipping_fee')
+            if($p['type'] == 'shipping_fee')
                 continue;
 
-            $cat = "";
+
             $product = Mage::getModel('catalog/product')->loadByAttribute('sku', $p['reference']);
             if($product){
                 $categoryIds = Mage::getModel('catalog/product')
@@ -100,18 +139,17 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
                     $cat = Mage::getModel('catalog/category')->load(end($categoryIds))->getName();
             }
 
-            $gc .= '_gaq.push(["_addItem",';
-            $gc .= '"' . $ko['merchant_reference']['orderid1'] . '",';
-            $gc .= '"' . $p['reference'] . '",';
-            $gc .= '"' . $p['name'] . '",';
-            $gc .= '"' . $cat . '",';
-            $gc .= '"' . $p['unit_price'] / 100 . '",';
-            $gc .= '"' . $p['quantity'] . '"';
-            $gc .= ']);' . "\n";
-
+            $gc .= sprintf("_gaq.push(['_addItem', '%s', '%s', '%s', '%s', '%s', '%s']);",
+                $orderId,
+                $p['reference'],
+                $p['name'],
+                null,
+                $p['unit_price'] / 100,
+                $p['quantity']
+            );
         }
        
-        $gc .= '_gaq.push(["_set", "currencyCode", "EUR"]); ';
+        $gc .= '_gaq.push(["_set", "currencyCode", "'. $ko['purchase_currency'].'"]); ';
         $gc .= '_gaq.push(["_trackTrans"]);';
         $gc .= '(function() { ';
         $gc .= 'var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ';
@@ -121,6 +159,71 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
         $gc .= '//]]>' . "\n";
         $gc .= '</script>';
         
+        return $gc;  
+    }
+
+    /**
+     *  Get Universal Google Analytics Ecommerce tracking code
+     *
+     *  @param      Klarna_Checkout_Order $ko
+     *  @param      string $shipping_fee
+     *  @param      string $orderId
+     *  @return     string
+     */
+    public function getUniversalAnalyticsCode($ko, $shipping_fee, $orderId)
+    {
+        $gc = '<script type="text/javascript">';
+        $gc .= "//<![CDATA[\n";
+        $gc .= "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){";
+        $gc .= "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),";
+        $gc .= "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)";
+        $gc .= "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');";
+
+        $gc .= "ga('create', '" . Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsNo() . "', 'auto');";
+
+        $gc .= "ga('require', 'ecommerce');";
+        $gc .= sprintf("ga('ecommerce:addTransaction', {
+                'id': '%s',
+                'affiliation': '%s',
+                'revenue': '%s',
+                'tax': '%s',
+                'shipping': '%s',
+                'currency': '%s'
+            });",
+            $orderId,
+            Mage::app()->getStore()->getName(),
+            $ko['cart']['total_price_including_tax'] / 100,
+            $ko['cart']['total_tax_amount'] / 100,
+            $shipping_fee / 100,
+            $ko['purchase_currency']
+        );
+
+        foreach ($ko['cart']['items'] as $p){
+
+            if($p['type'] == 'shipping_fee')
+                continue;
+
+            $gc .= sprintf("ga('ecommerce:addItem', {
+                    'id': '%s',
+                    'sku': '%s',
+                    'name': '%s',
+                    'category': '%s',
+                    'price': '%s',
+                    'quantity': '%s'
+                });",
+                $orderId,
+                $p['reference'],
+                $p['name'],
+                null,
+                $p['unit_price'] / 100,
+                $p['quantity']
+            );        
+        }
+        $gc .= "ga('ecommerce:send');";
+        
+        $gc .= '//]]>' . "\n";
+        $gc .= '</script>';
+
         return $gc;
     }
 }

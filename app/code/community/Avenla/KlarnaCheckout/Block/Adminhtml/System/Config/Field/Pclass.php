@@ -32,10 +32,10 @@ class Avenla_KlarnaCheckout_Block_Adminhtml_System_Config_Field_Pclass extends M
     public function getButtonHtml()
     {
         $html = $this->getLayout()->createBlock('adminhtml/widget_button')
-                    ->setType('button')
-                    ->setLabel(Mage::helper('klarnaCheckout')->__('Update PClasses'))
-                    ->setOnClick("javascript:updatePClasses(); return false;")
-                    ->toHtml();
+            ->setType('button')
+            ->setLabel(Mage::helper('klarnaCheckout')->__('Update PClasses'))
+            ->setOnClick("javascript:updatePClasses(); return false;")
+            ->toHtml();
 
         return $html;
     }

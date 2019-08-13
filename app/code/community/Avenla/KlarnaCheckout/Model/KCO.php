@@ -62,7 +62,7 @@ class Avenla_KlarnaCheckout_Model_KCO extends Mage_Payment_Model_Method_Abstract
         
         if(in_array($quote->getShippingAddress()->getShippingMethod(), $this->getConfig()->getDisallowedShippingMethods()))
             return false;
-        
+
 		return parent::isAvailable($quote) && 
                $connectionStatus && 
                (Mage::getSingleton('customer/session')->isLoggedIn() || Mage::helper('checkout')->isAllowedGuestCheckout($quote)) && 

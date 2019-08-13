@@ -20,13 +20,15 @@
  */
 class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
 {
-    const KCO_LIVE_URL      = 'https://checkout.klarna.com';
-    const KCO_DEMO_URL      = 'https://checkout.testdrive.klarna.com';
-    const KCO_LIVE_S_URL    = 'https://online.klarna.com';
-    const KCO_DEMO_S_URL    = 'https://testdrive.klarna.com';
-	const KLARNA_DOC_URL	= 'http://developers.klarna.com/';
-	const ONLINE_GUI_URL	= 'https://merchants.klarna.com';
-    const LICENSE_URL       = 'http://productdownloads.avenla.com/magento-modules/klarna-checkout/license';
+    const KCO_LIVE_URL 			= 'https://checkout.klarna.com';
+    const KCO_DEMO_URL        	= 'https://checkout.testdrive.klarna.com';
+    const KCO_LIVE_S_URL      	= 'https://online.klarna.com';
+    const KCO_DEMO_S_URL      	= 'https://testdrive.klarna.com';
+	const KLARNA_DOC_URL	  	= 'http://developers.klarna.com/';
+	const ONLINE_GUI_URL	  	= 'https://merchants.klarna.com';
+    const LICENSE_URL         	= 'http://productdownloads.avenla.com/magento-modules/klarna-checkout/license';
+    const ANALYTICS_UNIVERSAL 	= 'universal';
+    const ANALYTICS_CLASSIC 	= 'analytics';
 	
     /**
      *  Return config var
@@ -127,6 +129,16 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
             return false;
 
         return $this->getConfigData('google_analytics');
+    }
+
+    /**
+     * Get Google Analytics account type
+     * 
+     * @return  string
+     */
+    public function getGoogleAnalyticsType()
+    {
+        return $this->getConfigData('google_analytics_type');
     }
 
 	/**

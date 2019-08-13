@@ -71,17 +71,17 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
             
             if($ko != null){
                 $_SESSION['klarna_checkout'] = $sessionId = $ko->getLocation();
-                
-                if($quote->getShippingAddress()->getPostcode() == null)
-                        $result['msg'] = $this->__("Please fill in your post code");
-					
-                if($quote->getShippingAddress()->getCountry() == null)
-                        $result['msg'] = $this->__("Please select country");
-				
-                if (!$quote->isVirtual() && $quote->getShippingAddress()->getShippingMethod() == null)
-                    $result['msg'] = $this->__("Please select shipping method to use Klarna Checkout");
-
-                $result['klarnaframe'] = $ko['gui']['snippet'];            
+                if(!$quote->isVirtual()){
+                    if($quote->getShippingAddress()->getPostcode() == null)
+                            $result['msg'] = $this->__("Please fill in your post code");
+    					
+                    if($quote->getShippingAddress()->getCountry() == null)
+                            $result['msg'] = $this->__("Please select country");
+    				
+                    if ($quote->getShippingAddress()->getShippingMethod() == null)
+                        $result['msg'] = $this->__("Please select shipping method to use Klarna Checkout");
+                }
+                $result['klarnaframe'] = $ko['gui']['snippet'];          
             }
         }
         
@@ -270,6 +270,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
             $mo->getPayment()->save();
             
             $update['merchant_reference']['orderid1'] = $mo->getIncrementId();
+            $update['merchant_reference']['orderid2'] = $quoteID;
             $update['status'] = 'created';
             $ko->update($update);
 

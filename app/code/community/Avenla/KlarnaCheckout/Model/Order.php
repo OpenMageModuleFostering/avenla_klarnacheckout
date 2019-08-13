@@ -31,6 +31,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 	public  $connector;    
 	public  $order;
 	private $mobile;
+    private $discounted = 0;
     
 	public function __construct()
 	{ 
@@ -184,21 +185,26 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 	private function addProductsToCart()
 	{
         $mCart = $this->quote->getAllVisibleItems();
-		if(count($mCart) > 0){
-			foreach ($mCart as $i)
-			{
-				$this->cart[] = array(
-					'type' 			=> 'physical',
-					'reference' 	=> $i->getSku(),
-					'name' 			=> $i->getName(),
-					'uri' 			=> $i->getUrlPath(),
-					'quantity' 		=> (int)$i->getQty(),
-					'unit_price' 	=> round($i->getBasePriceInclTax(), 2) * 100,
-					'discount_rate' => round($i->getDiscountPercent(), 2) * 100,
-					'tax_rate' 		=> round($i->getTaxPercent(), 2) * 100
-				);
-			}
-		}
+        if(count($mCart) > 0){
+            foreach ($mCart as $i){
+                $discount_rate = 0;
+                if($i->getBaseDiscountAmount()){
+                    $discount_rate = $i->getBaseDiscountAmount() / ($i->getBaseRowTotalInclTax() / 100);
+                    $this->discounted += $i->getBaseDiscountAmount();
+                }
+
+                $this->cart[] = array(
+                    'type'          => 'physical',
+                    'reference'     => $i->getSku(),
+                    'name'          => $i->getName(),
+                    'uri'           => $i->getUrlPath(),
+                    'quantity'      => (int)$i->getQty(),
+                    'unit_price'    => round($i->getBasePriceInclTax(), 2) * 100,
+                    'discount_rate' => round($discount_rate, 2) * 100,
+                    'tax_rate'      => round($i->getTaxPercent(), 2) * 100
+                );
+            }
+        }
 	}
     
     /**
@@ -209,18 +215,18 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     {
         $totals = $this->quote->getTotals();
         $baseDiscount = $this->quote->getShippingAddress()->getBaseDiscountAmount();
-        
-        if($baseDiscount < 0){
+
+        if(abs($baseDiscount) - $this->discounted > 0.001){
             $discount = $totals['discount'];
             
             $this->cart[] = array(
-				'type' 			=> 'discount',
-				'reference' 	=> $discount->getcode(),
-				'name' 			=> $discount->getTitle(),
-				'quantity' 		=> 1,
-				'unit_price' 	=> round($baseDiscount, 2) * 100,
-				'tax_rate' 		=> 0
-			);
+                'type'          => 'discount',
+                'reference'     => $discount->getcode(),
+                'name'          => $discount->getTitle(),
+                'quantity'      => 1,
+                'unit_price'    => round($baseDiscount, 2) * 100,
+                'tax_rate'      => 0
+            );
         }
     }
     

@@ -50,6 +50,12 @@ class Avenla_KlarnaCheckout_Model_Validator extends Mage_Core_Model_Abstract
      */
     public function validateQuote($quote, $ko)
     {
+        if(!isset($ko->shipping_address->phone) || !isset($ko->billing_address->phone)){
+            $msg = Mage::helper('klarnaCheckout')->__('Please fill in your phone number.');
+            Mage::getSingleton('core/session')->addError($msg);
+            return false;
+        }
+        
         if (!$quote->isVirtual()){
             $address = $quote->getShippingAddress();
             $method= $address->getShippingMethod();

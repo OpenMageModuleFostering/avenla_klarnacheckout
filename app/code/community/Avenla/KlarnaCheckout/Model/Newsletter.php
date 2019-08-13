@@ -50,7 +50,7 @@ class Avenla_KlarnaCheckout_Model_Newsletter extends Mage_Core_Model_Abstract
             return false;
         
         try{
-            if(!$mo->getCustomerIsGuest()){
+            if($mo->getCustomerId() != NULL){
                 $customer = Mage::getModel('customer/customer')->load($mo->getCustomerId());
                 Mage::getModel('newsletter/subscriber')->subscribeCustomer($customer);
             }

@@ -52,8 +52,12 @@ class Avenla_KlarnaCheckout_Model_Observer
         
         switch ($order->getState()) {
             case Mage_Sales_Model_Order::STATE_COMPLETE:
-                if($order->canInvoice())
+                if($order->canInvoice()){
                     $this->api->activateReservation($order);
+                }
+                else{
+                    $this->api->cancelReservation($rno, $order);
+                }
                 
                 break;
             

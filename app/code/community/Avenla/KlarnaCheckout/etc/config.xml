@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!--
+
+ This file is released under a custom license by Avenla Oy.
+ All rights reserved
+ 
+ License and more information can be found at http://productdownloads.avenla.com/magento-modules/klarna-checkout/ 
+ For questions and support - klarna-support@avenla.com
+ 
+ @category   Avenla
+ @package    Avenla_KlarnaCheckout
+ @copyright  Copyright (c) Avenla Oy
+ @link       http://www.avenla.fi 
+
+
+
+ Avenla KlarnaCheckout
+
+ @category   Avenla
+ @package    Avenla_KlarnaCheckout
+
+-->
+<config>
+	<modules>
+		<Avenla_KlarnaCheckout>
+			<version>1.0.3</version>
+		</Avenla_KlarnaCheckout>
+	</modules>
+	<global>
+		<blocks>
+			<klarnaCheckout>
+				<class>Avenla_KlarnaCheckout_Block</class>
+			</klarnaCheckout>
+		</blocks>
+		<models>
+			<klarnaCheckout>
+				<class>Avenla_KlarnaCheckout_Model</class>
+			</klarnaCheckout>
+		</models>
+		<helpers>
+			<klarnaCheckout>
+				<class>Avenla_KlarnaCheckout_Helper</class>
+			</klarnaCheckout>
+		</helpers>
+		<payment>
+			<groups>
+				<klarnaCheckout>KlarnaCheckout</klarnaCheckout>
+			</groups>
+		</payment>
+		<events>
+			<core_block_abstract_to_html_before>
+				<observers>
+					<Avenla_KlarnaCheckout_core_block_abstract_to_html_before>
+						<class>klarnaCheckout/observer</class>
+						<method>addActivate</method>
+					</Avenla_KlarnaCheckout_core_block_abstract_to_html_before>
+				</observers>
+			</core_block_abstract_to_html_before>
+			<sales_order_save_commit_after>
+				<observers>
+					<avenla_klarnacheckout_sales_order_save_commit_after>
+						<type>singleton</type>
+						<class>klarnaCheckout/observer</class>
+						<method>orderStatusChanged</method>
+					</avenla_klarnacheckout_sales_order_save_commit_after>
+				</observers>
+			</sales_order_save_commit_after>
+			<sales_order_invoice_save_after>
+				<observers>
+					<avenla_klarnacheckout_sales_order_invoice_save_after>
+						<type>singleton</type>
+						<class>klarnaCheckout/observer</class>
+						<method>invoiceSaved</method>
+					</avenla_klarnacheckout_sales_order_invoice_save_after>
+				</observers>
+			</sales_order_invoice_save_after>
+		</events>
+	</global>
+    
+	<default>
+		<payment>
+			<klarnaCheckout_payment>
+				<model>klarnaCheckout/KCO</model>
+				<group>klarnaCheckout</group>
+				<payment_action>authorize</payment_action>
+				<active>1</active>
+				<title>Klarna Checkout</title>
+				<allowspecific>1</allowspecific>
+			</klarnaCheckout_payment>
+		</payment>
+	</default>
+    
+	<frontend>
+		<translate>
+			<modules>
+				<translations>
+					<files>
+						<default>Avenla_KlarnaCheckout.csv</default>
+					</files>
+				</translations>
+			</modules>
+		</translate>
+		<layout>
+			<updates>
+				<klarnaCheckout>
+					<file>KCO.xml</file>
+				</klarnaCheckout>
+			</updates>
+		</layout>
+		<routers>
+			<checkout>
+				<args>
+					<modules>
+						<Avenla_KlarnaCheckout before="Mage_Checkout">Avenla_KlarnaCheckout</Avenla_KlarnaCheckout>
+					</modules>
+				</args>
+			</checkout>
+			<klarnaCheckout>
+				<use>standard</use>
+				<args>
+					<module>Avenla_KlarnaCheckout</module>
+					<frontName>klarnaCheckout</frontName>
+				</args>
+			</klarnaCheckout>
+		</routers>
+		<events>
+			<core_block_abstract_to_html_before>
+				<observers>
+					<avenla_klarnacheckout_observer>
+						<type>model</type>
+						<class>klarnaCheckout/observer</class>
+						<method>insertKlarnaLink</method>
+					</avenla_klarnacheckout_observer>
+				</observers>
+			</core_block_abstract_to_html_before>
+		</events>
+	</frontend>
+	
+	<adminhtml>
+		<translate>
+			<modules>
+				<translations>
+					<files>
+						<default>Avenla_KlarnaCheckout.csv</default>
+					</files>
+				</translations>
+			</modules>
+		</translate>
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<Avenla>
+											<title>Avenla - All</title>
+										</Avenla>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+	</adminhtml>
+</config>

@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Avenla_KlarnaCheckout",
+    "type": "magento-module",
+    "license": "Custom-license-by-Avenla-Oy",
+    "homepage": "",
+    "description": "Klarna Checkout payment module",
+    "authors": [
+    {
+        "name": "Avenla Oy",
+        "email": "info@avenla.fi"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

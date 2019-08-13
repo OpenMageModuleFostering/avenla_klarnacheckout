@@ -1,0 +1,134 @@
+﻿/**
+ * This file is released under a custom license by Avenla Oy.
+ * All rights reserved
+ * 
+ * License and more information can be found at http://productdownloads.avenla.com/magento-modules/klarna-checkout/ 
+ * For questions and support - klarna-support@avenla.com
+ * 
+ * @category   Avenla
+ * @package    Avenla_KlarnaCheckout
+ * @copyright  Copyright (c) Avenla Oy
+ * @link       http://www.avenla.fi 
+ */
+
+/**
+ * Avenla KlarnaCheckout
+ *
+ * @category   Avenla
+ * @package    Avenla_KlarnaCheckout
+ */
+ 
+#klarnaWrapper {position: relative;} 
+.klarnaLink, #klarnaMsg{
+    background-color:#FFF;
+    text-align:center;
+    border:1px solid #1e7ec8;
+    display:block;
+    padding:20px 5px;
+    margin-bottom:10px;
+    border-radius:3px;
+ }
+ 
+#klarnaMsg{margin-bottom:0px;}
+.klarna_link_text{margin:10px 0px 0px 0px;font-weight:bold;}
+#klarnaMsg h2{
+    color:#1e7ec8;
+    font-weight:bold;
+    margin:0px;
+}
+.klarnaLink:hover{border:1px solid #8CCBFC;}
+#klarnaWrapper{position:relative;}
+.klarna_alert{font-weight:bold; color:red;}
+#klarnaOverlay{
+	background-color:#FFF;
+	position:absolute;
+	height:100%;
+	width:100%;
+	opacity:0.5;
+}
+ 
+.cart .payments ul li {
+	display:block;
+	float:left;
+	border-top-right-radius:8px;
+	border-top-left-radius:8px;
+	margin-right:5px;
+	border-right: 1px solid #d0cbc1;
+	padding:10px;
+	border-bottom:0px;
+	background: #eeeeee;
+}
+
+.cart .payments ul{display:block;margin:0;}
+.cart .totals_row{margin: 0 0 18px;}
+.cart .payments ul li a, .responsive-payments ul li a{
+	display:block;
+	text-decoration:none;
+	font: 18px "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: 700;
+	color: #31393E;
+}
+.cart .payments ul li.active a{color:#fff;}
+.cart .payments ul li.active{
+	position:relative;
+	z-index:20;
+	background: rgb(178,225,255);
+	background: -moz-linear-gradient(top,  rgba(178,225,255,1) 0%, rgba(102,182,252,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(178,225,255,1)), color-stop(100%,rgba(102,182,252,1)));
+	background: -webkit-linear-gradient(top,  rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+	background: -o-linear-gradient(top,  rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+	background: linear-gradient(to bottom,  rgba(178,225,255,1) 0%,rgba(102,182,252,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', endColorstr='#66b6fc',GradientType=0 );
+	margin-bottom: -1px;
+	margin-top: 1px;
+}
+
+.cart .payments ul li:hover{
+	background: rgb(222,239,255);
+	background: -moz-linear-gradient(top,  rgba(222,239,255,1) 0%, rgba(152,190,222,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(222,239,255,1)), color-stop(100%,rgba(152,190,222,1)));
+	background: -webkit-linear-gradient(top,  rgba(222,239,255,1) 0%,rgba(152,190,222,1) 100%);
+	background: -o-linear-gradient(top,  rgba(222,239,255,1) 0%,rgba(152,190,222,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(222,239,255,1) 0%,rgba(152,190,222,1) 100%);
+	background: linear-gradient(to bottom,  rgba(222,239,255,1) 0%,rgba(152,190,222,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#deefff', endColorstr='#98bede',GradientType=0 );
+}
+
+.payment_container{
+	padding:5px;
+	overflow: hidden;
+	clear:both;
+	margin-top:0px;
+	position: relative;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border: 1px solid #d0cbc1;
+}
+
+.sp-methods{
+	background:none !important;
+	margin:0px !important;
+	padding:0px !important;
+}
+.cart .crosssell{margin: 0 0 18px;}
+.cart .cart-collaterals .col2-set, .cart .totals{width:auto;float:none;}
+.cart .cart-collaterals .col2-set .col-2{width: 48.5%;}
+.cart .crosssell{overflow:hidden;}
+.cart .crosssell li.item{float:left;margin-right:10px;}
+.paymentMenuContainer {position:relative;}
+.responsive-payments ul{overflow:hidden;border:1px solid #ddd;border-radius:3px 0px 0px 3px;margin-bottom:10px !important;}
+.responsive-payments .paymentnavi-toggle{display:block;position:absolute;right:0;height:40px;width:40px;background:url('dropdown.png') no-repeat;}
+.responsive-payments .paymentnavi-toggle:hover{cursor:pointer;}
+.responsive-payments ul li{
+	padding:8px 40px 8px 0px !important;
+	background:#fff;
+	float:none !important;
+	text-align:center;
+	border-bottom:1px solid #ddd;
+	display:none;
+	transition:0.4s;
+}
+.responsive-payments ul li:hover {box-shadow:inset 0px 0px 5px 5px rgba(0,0,0,0.025);}
+.responsive-payments ul li.active{display:block !important;}
+.klarna-part-payment{margin-top:10px;}

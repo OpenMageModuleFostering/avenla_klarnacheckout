@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<!--
+ This file is released under a custom license by Avenla Oy.
+ All rights reserved
+ 
+ License and more information can be found at http://productdownloads.avenla.com/magento-modules/klarna-checkout/ 
+ For questions and support - klarna-support@avenla.com
+ 
+ @category   Avenla
+ @package    Avenla_KlarnaCheckout
+ @copyright  Copyright (c) Avenla Oy
+ @link       http://www.avenla.fi 
+
+
+ Avenla KlarnaCheckout
+
+ @category   Avenla
+ @package    Avenla_KlarnaCheckout
+
+-->
+<config>
+	<sections>
+		<payment>
+			<groups>
+				<klarnaCheckout_payment translate="label" module="klarnaCheckout">
+					<label>Klarna Checkout</label>
+					<sort_order>700</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<klarna_notice translate="label" module="klarnaCheckout">
+							<frontend_model>klarnaCheckout/adminhtml_system_config_fieldset_info</frontend_model>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</klarna_notice>
+						<license translate="label">
+							<label>I accept the terms in the license agreement</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</license>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>3</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</active>						
+						<server translate="label">
+							<label>Server</label>
+							<frontend_type>select</frontend_type>
+							<source_model>klarnaCheckout/source_servermode</source_model>
+							<sort_order>4</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</server>
+						<merchantid translate="label">
+							<label>Merchant ID</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>5</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</merchantid>
+						<sharedsecret translate="label">
+							<label>Shared secret</label>
+							<frontend_type>obscure</frontend_type>
+							<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+							<sort_order>6</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</sharedsecret>
+						<specificcountry>
+							<label>Activated Countries</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>klarnaCheckout/source_countries</source_model>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>                      
+						</specificcountry>
+						<locale translate="label">
+							<label>Locale</label>
+							<comment><![CDATA[Checkout won't be displayed if selected locale is not allowed by Klarna]]></comment>
+							<frontend_type>select</frontend_type>
+							<source_model>klarnaCheckout/source_orderlocale</source_model>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</locale>
+						<activate_partial translate="label">
+							<label>Activate partial shipments</label>
+							<comment><![CDATA[When selected, partial shipments will be automatically activated in Klarna]]></comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>8</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</activate_partial>
+						<return_tax translate="label">
+							<label>Tax class for all amount returns / adjustment fee</label>
+							<frontend_type>select</frontend_type>
+							<source_model>klarnaCheckout/source_taxclass</source_model>
+							<sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</return_tax>
+						<title translate="label">
+							<label>Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</title>
+						<linktext translate="label">
+							<label>Link text</label>
+							<comment><![CDATA[Text shown in Klarna link at Magento Checkout]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>11</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</linktext>
+						<terms_url translate="label">
+							<label>Terms URL</label>
+							<comment><![CDATA[Relative to Website Base URL]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>12</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</terms_url>
+						<google_analytics translate="label">
+							<label>Google Analytics account no</label>
+							<comment><![CDATA[Enter account number to use Google Ecommerce tracking]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>13</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</google_analytics>
+					</fields>
+				</klarnaCheckout_payment>
+			</groups>
+		</payment>
+	</sections>
+</config>

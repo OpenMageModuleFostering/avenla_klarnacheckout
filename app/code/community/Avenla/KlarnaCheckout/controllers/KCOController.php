@@ -67,6 +67,29 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
 	}
 
 	/**
+	 * Add email to quote
+	 */
+	public function addEmailAction()
+	{
+		$result = array();
+		$kcoEmail = $this->getRequest()->getParam('klarna_email');
+
+		if (!Zend_Validate::is($kcoEmail, 'EmailAddress') || !Zend_Validate::is($kcoEmail, 'NotEmpty'))
+			return false;
+
+		try {
+			$quote = Mage::getSingleton('checkout/session')->getQuote();
+			$quote->setCustomerEmail($kcoEmail)->save();
+		}
+		catch (Exception $e) {
+			Mage::helper('klarnaCheckout')->logException($e);
+		}
+
+		$result['msg'] = ' ';
+		$this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+	}
+
+	/**
 	 *  Confirmation action for Klarna Checkout
 	 */
 	public function confirmationAction()

@@ -19,19 +19,25 @@
  * @package    Avenla_KlarnaCheckout
  */
 
-class Avenla_KlarnaCheckout_Model_Source_Servermode
+class Avenla_KlarnaCheckout_Model_Source_FlowType
 {
 	public function toOptionArray()
 	{
-		return array(
+		$options = array(
 			array(
-				'label' => 'Live',
-				'value' => Avenla_KlarnaCheckout_Model_Config::SERVER_MODE_LIVE
+				'label' => Mage::helper('klarnaCheckout')->__('Disabled'),
+				'value' => Avenla_KlarnaCheckout_Model_Config::B2B_DISABLED
 			),
 			array(
-				'label' => 'Testdrive',
-				'value' => Avenla_KlarnaCheckout_Model_Config::SERVER_MODE_DEMO
+				'label' => Mage::helper('klarnaCheckout')->__('Enabled'),
+				'value' => Avenla_KlarnaCheckout_Model_Config::B2B_ENABLED
+			),
+			array(
+				'label' => Mage::helper('klarnaCheckout')->__('Enabled (B2B as default)'),
+				'value' => Avenla_KlarnaCheckout_Model_Config::B2B_ENABLED_B2B_DEFAULT
 			)
 		);
+
+		return $options;
 	}
 }

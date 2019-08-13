@@ -105,6 +105,26 @@ class Avenla_KlarnaCheckout_Model_Order_Kcov3 extends Avenla_KlarnaCheckout_Mode
 	}
 
 	/**
+	 * 	Get extra options
+	 *
+	 *	@return array|false
+	 */
+	protected function getExtraOptions()
+	{
+		return false;
+	}
+
+	/**
+	 *  Get customer options
+	 *
+	 *  @return array
+	 */
+	protected function getCustomerOptions()
+	{
+		return false;
+	}
+
+	/**
 	 *  Get order data for create or update request
 	 *
 	 *  @return array

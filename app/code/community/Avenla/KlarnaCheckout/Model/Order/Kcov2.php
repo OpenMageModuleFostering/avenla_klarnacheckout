@@ -84,6 +84,65 @@ class Avenla_KlarnaCheckout_Model_Order_Kcov2 extends Avenla_KlarnaCheckout_Mode
 	}
 
 	/**
+	 * 	Get extra options
+	 *
+	 *	@return array|false
+	 */
+	protected function getExtraOptions()
+	{
+		$options = array();
+
+		if($this->getAllowedCustomerTypes())
+			$options['allowed_customer_types'] = $this->getAllowedCustomerTypes();
+
+		if(!empty($options))
+			return $options;
+
+		return false;
+	}
+
+	/**
+	 * 	Get allowed customer types
+	 *
+	 * 	@return array
+	 */
+	private function getAllowedCustomerTypes()
+	{
+		$types = array();
+
+		$types[] = Avenla_KlarnaCheckout_Model_Config::CUSTOMER_TYPE_PERSON;
+		if($this->config->allowB2BFlow())
+			$types[] = Avenla_KlarnaCheckout_Model_Config::CUSTOMER_TYPE_ORGANIZATION;
+
+		if(!empty($types))
+			return $types;
+
+		return false;
+	}
+
+	/**
+	 *  Get customer options
+	 *
+	 *  @return array
+	 */
+	protected function getCustomerOptions()
+	{
+		$data = array();
+
+		if($this->quote && !$this->disableCustomerData){
+			if($this->quote->getCustomerTaxvat()){
+				$data['organization_registration_id'] = $this->quote->getCustomerTaxvat();
+				$data['type'] = Avenla_KlarnaCheckout_Model_Config::CUSTOMER_TYPE_ORGANIZATION;
+			}
+		}
+
+		if(!empty($data))
+			return $data;
+
+		return false;
+	}
+
+	/**
 	 *  Get order data for create or update request
 	 *
 	 *  @return array
@@ -97,6 +156,9 @@ class Avenla_KlarnaCheckout_Model_Order_Kcov2 extends Avenla_KlarnaCheckout_Mode
 			$data['merchant']['checkout_uri']         = $this->helper->getCheckoutUri();
 			$data['merchant']['confirmation_uri']     = $this->helper->getConfirmationUri();
 			$data['merchant']['push_uri']             = $this->helper->getPushUri();
+
+			if($this->config->getB2BTermsUrl())
+				$data['merchant']['organization_terms_uri'] = $this->config->getB2BTermsUrl();
 
 			if($this->helper->getValidationUri())
 				$data['merchant']['validation_uri']   = $this->helper->getValidationUri();
@@ -256,6 +318,9 @@ class Avenla_KlarnaCheckout_Model_Order_Kcov2 extends Avenla_KlarnaCheckout_Mode
 		$info->setLogoSrc($this->helper->getLogoSrc());
 		$info->setGuiUrl(Avenla_KlarnaCheckout_Model_Config::ONLINE_GUI_URL);
 		$info->setExpiration($this->order['expires_at']);
+
+		if(isset($this->order['billing_address']['reference']))
+			$info->setOrganizationReference($this->order['billing_address']['reference']);
 
 		if($paymentInfo){
 			$info->setReservation($paymentInfo->getAdditionalInformation(Avenla_KlarnaCheckout_Model_Payment_Abstract::ADDITIONAL_FIELD_KLARNA_RESERVATION));

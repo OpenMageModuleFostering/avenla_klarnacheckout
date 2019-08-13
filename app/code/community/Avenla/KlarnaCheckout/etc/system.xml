@@ -118,11 +118,22 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</allow_separate_shipping>
+						<b2b_flow translate="label">
+							<depends><api>2</api></depends>
+							<label>Enable B2B flow</label>
+							<frontend_type>select</frontend_type>
+							<comment><![CDATA[Available only if you have enabled B2B with Klarna.]]></comment>
+							<source_model>klarnaCheckout/source_flowType</source_model>
+							<sort_order>11</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</b2b_flow>
 						<return_tax translate="label">
 							<label>Tax class for all amount returns / adjustment fee</label>
 							<frontend_type>select</frontend_type>
 							<source_model>klarnaCheckout/source_taxclass</source_model>
-							<sort_order>11</sort_order>
+							<sort_order>12</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -130,7 +141,7 @@
 						<title translate="label">
 							<label>Title</label>
 							<frontend_type>text</frontend_type>
-							<sort_order>12</sort_order>
+							<sort_order>13</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -139,7 +150,7 @@
 							<label>Link text</label>
 							<comment><![CDATA[Text shown in Klarna link at Magento Checkout]]></comment>
 							<frontend_type>text</frontend_type>
-							<sort_order>13</sort_order>
+							<sort_order>14</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -148,16 +159,25 @@
 							<label>Terms URL</label>
 							<comment><![CDATA[Relative to Website Base URL]]></comment>
 							<frontend_type>text</frontend_type>
-							<sort_order>14</sort_order>
+							<sort_order>15</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</terms_url>
+						<terms_url_b2b translate="label">
+							<depends><b2b_flow>1</b2b_flow></depends>
+							<label>Terms URL for B2B</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>16</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</terms_url_b2b>
 						<google_analytics translate="label">
 							<label>Google Analytics account no</label>
 							<comment><![CDATA[Enter account number to use Google Ecommerce tracking]]></comment>
 							<frontend_type>text</frontend_type>
-							<sort_order>15</sort_order>
+							<sort_order>17</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -166,7 +186,7 @@
 							<label>Google Analytics account Type</label>
 							<frontend_type>select</frontend_type>
 							<source_model>klarnaCheckout/source_analyticsType</source_model>
-							<sort_order>16</sort_order>
+							<sort_order>18</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -175,7 +195,7 @@
 							<label>Hide links to default Checkout</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
-							<sort_order>17</sort_order>
+							<sort_order>19</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -184,7 +204,7 @@
 							<label>Cart page layout</label>
 							<frontend_type>select</frontend_type>
 							<source_model>klarnaCheckout/source_kcolayout</source_model>
-							<sort_order>18</sort_order>
+							<sort_order>20</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -193,7 +213,7 @@
 							<label>Disabled shipping methods</label>
 							<frontend_type>multiselect</frontend_type>
 							<source_model>klarnaCheckout/source_shippingmethods</source_model>
-							<sort_order>19</sort_order>
+							<sort_order>21</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -204,7 +224,7 @@
 							<label>Show part payment widget on product page</label>
 							<frontend_type>select</frontend_type>
 							<source_model>klarnaCheckout/source_ppwidget</source_model>
-							<sort_order>20</sort_order>
+							<sort_order>22</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -214,26 +234,16 @@
 							<label>Part payment widget layout</label>
 							<frontend_type>select</frontend_type>
 							<source_model>klarnaCheckout/source_pplayout</source_model>
-							<sort_order>21</sort_order>
+							<sort_order>23</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</pp_layout>
-						<!--update_pclass translate="button_label">
-							<depends><api>2</api></depends>
-							<label></label>
-							<button_label>Update Pclasses</button_label>
-							<frontend_model>klarnaCheckout/adminhtml_system_config_field_pclass</frontend_model>
-							<sort_order>22</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-						</update_pclass-->
 						<show_newsletter translate="label">
 							<label>Show newsletter subscription checkbox</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
-							<sort_order>23</sort_order>
+							<sort_order>24</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -243,7 +253,7 @@
 							<comment><![CDATA[Only if you have gift messages are enabled.]]></comment>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
-							<sort_order>24</sort_order>
+							<sort_order>25</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -252,7 +262,7 @@
 							<label>Use custom colors</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
-							<sort_order>25</sort_order>
+							<sort_order>26</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -261,7 +271,7 @@
 							<label>Button color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>26</sort_order>
+							<sort_order>27</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -271,7 +281,7 @@
 							<label>Button text color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>27</sort_order>
+							<sort_order>28</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -281,7 +291,7 @@
 							<label>Checkbox color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>28</sort_order>
+							<sort_order>29</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -291,7 +301,7 @@
 							<label>Checkbox checkmark color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>29</sort_order>
+							<sort_order>30</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -301,7 +311,7 @@
 							<label>Header color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>30</sort_order>
+							<sort_order>31</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
@@ -311,12 +321,51 @@
 							<label>Link color</label>
 							<frontend_type>text</frontend_type>
 							<validate>color</validate>
-							<sort_order>31</sort_order>
+							<sort_order>32</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 							<depends><custom_colors>1</custom_colors></depends>
 						</color_link>
+						<additional_checkbox translate="label">
+							<label>Add Custom Checkbox</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>33</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</additional_checkbox>
+						<additional_checkbox_text translate="label">
+							<label>Custom Checkbox text</label>
+							<comment><![CDATA[Paste <i>[MyLinkText](www.example.com)</i> and replace placeholders with your own values to get a link.]]></comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>34</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<depends><additional_checkbox>1</additional_checkbox></depends>
+						</additional_checkbox_text>
+						<additional_checkbox_required translate="label">
+							<label>Is Custom Checkbox required</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>35</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<depends><additional_checkbox>1</additional_checkbox></depends>
+						</additional_checkbox_required>
+						<additional_checkbox_checked translate="label">
+							<label>Custom Checkbox default value</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>36</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<depends><additional_checkbox>1</additional_checkbox></depends>
+						</additional_checkbox_checked>
 					</fields>
 				</klarnaCheckout_payment>
 			</groups>

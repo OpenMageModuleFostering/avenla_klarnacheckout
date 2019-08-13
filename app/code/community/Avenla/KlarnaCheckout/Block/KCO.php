@@ -21,10 +21,42 @@
 
 class Avenla_KlarnaCheckout_Block_KCO extends Mage_Core_Block_Template
 {
+	/**
+	 *	Get URL for KCO loadframe action
+	 *
+	 *	@return string
+	 */
 	public function getLoadUrl()
 	{
 		return $this->getUrl(
 			"klarnaCheckout/KCO/loadKcoFrame/",
+			array("_forced_secure" => Mage::app()->getStore()->isCurrentlySecure())
+		);
+	}
+
+	/**
+	 *	Check if quote has email
+	 *
+	 *	@return bool
+	 */
+	public function checkQuoteEmail()
+	{
+		$quote = Mage::getSingleton('checkout/session')->getQuote();
+		if($quote->getCustomerEmail())
+			return false;
+
+		return true;
+	}
+
+	/**
+	 *	Get URL for addEmail action
+	 *
+	 *	@return string
+	 */
+	public function getAddEmailUrl()
+	{
+		return $this->getUrl(
+			"klarnaCheckout/KCO/addEmail/",
 			array("_forced_secure" => Mage::app()->getStore()->isCurrentlySecure())
 		);
 	}

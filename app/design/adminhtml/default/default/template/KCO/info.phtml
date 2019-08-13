@@ -58,6 +58,11 @@
 			<?php endif; ?>
 		<?php endif; ?>
 
+		<?php // Organization reference ?>
+		<?php if($klarnaInfo->getOrganizationReference()): ?>
+			<p><?php echo $this->__('Organization reference: %s', $klarnaInfo->getOrganizationReference());?><p>
+		<?php endif; ?>
+
 		<?php // Invoices ?>
 		<?php if($klarnaInfo->getCaptures()):?>
 			<div style="border:1px solid #CCC;padding:5px;">

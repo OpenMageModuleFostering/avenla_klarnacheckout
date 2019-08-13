@@ -30,6 +30,7 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 	protected $discounted = 0;
 	protected $dummyAmount = 4490;
 	protected $dummy = false;
+	protected $disableCustomerData = false;
 
 	public function __construct()
 	{
@@ -99,11 +100,11 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 	 *
 	 * @return	array
 	 */
-	protected function getCustomerInfo()
+	protected function getAddressInfo()
 	{
 		$info = array();
 
-		if($this->quote){
+		if($this->quote && !$this->disableCustomerData){
 			$sa = $this->quote->getShippingAddress();
 			$sa->getPostcode() != null ? $info['postal_code'] = $sa->getPostcode() : '';
 			$this->quote->getCustomerEmail() != null ? $info['email'] = $this->quote->getCustomerEmail() : '';
@@ -118,7 +119,7 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 	protected function createOrder()
 	{
 		$request = new Varien_Object();
-		$info = $this->getCustomerInfo();
+		$info = $this->getAddressInfo();
 
 		if(!empty($info))
 			$request->setShippingAddress($info);
@@ -139,6 +140,22 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 			$options->setColorLink('#'.$this->config->getLinkColor());
 		}
 
+		if($extraOptions = $this->getExtraOptions())
+			$options->addData($extraOptions);
+
+		if($customerOptions = $this->getCustomerOptions())
+			$request->setCustomer($customerOptions);
+
+		if($this->config->useAdditionalCheckbox()) {
+			$options->setAdditionalCheckbox(
+				array(
+					'text' => $this->config->getAdditionalCheckboxText(),
+					'checked' => $this->config->getAdditionalCheckboxChecked(),
+					'required' => $this->config->getAdditionalCheckboxRequired()
+				)
+			);
+		}
+
 		$request->setGui(array('options' => array('disable_autofocus')));
 		$request->addData(array('options' => $options->getData()));
 		$request->addData($this->getOrderData());
@@ -149,6 +166,16 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 
 			if(!$this->dummy)
 				$this->order->fetch();
+		}
+		catch(Klarna_Checkout_ApiErrorException $e){
+			$this->helper->logException($e);
+			if(!$this->disableCustomerData){
+				$this->disableCustomerData = true;
+				$this->createOrder();
+				return;
+			}
+			$this->helper->logException($e);
+			$this->order = null;
 		}
 		catch (Exception $e){
 			$this->helper->logException($e);
@@ -170,7 +197,7 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 			}
 
 			$request = new Varien_Object();
-			$info = $this->getCustomerInfo();
+			$info = $this->getAddressInfo();
 			if(!empty($info))
 				$request->setShippingAddress($info);
 
@@ -224,10 +251,18 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
             $quote->save();
 		}
 
+		if($ko['customer']['type'] == Avenla_KlarnaCheckout_Model_Config::CUSTOMER_TYPE_ORGANIZATION)
+			$quote->setCustomerTaxvat($ko['customer']['organization_registration_id']);
+
 		$quote->getBillingAddress()->addData($this->convertAddress($ko['billing_address']));
 		$quote->getShippingAddress()->addData($this->convertAddress($ko['shipping_address']));
 		$quote->getPayment()->setMethod($this->getPaymentModel()->getCode());
-		$quote->getPayment()->setAdditionalInformation($this->getAdditionalOrderInformation());
+
+		if($additionalInformation = $this->getAdditionalOrderInformation()){
+			foreach ($additionalInformation as $key => $value)
+				$quote->getPayment()->setAdditionalInformation($key, $value);
+		}
+
 		$quote->collectTotals()->save();
 
 		$service = Mage::getModel('sales/service_quote', $quote);
@@ -271,6 +306,9 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 			'telephone'             => $phone
 		);
 
+		if(isset($address['organization_name']))
+			$magentoAddress['company'] = $address['organization_name'];
+
 		return $magentoAddress;
 	}
 
@@ -297,7 +335,7 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 		$mo->getSendConfirmation(null);
 		$mo->sendNewOrderEmail();
 		if($mo->getPayment()->getAdditionalInformation(Avenla_KlarnaCheckout_Model_Payment_Abstract::ADDITIONAL_FIELD_NEWSLETTER))
-			Mage::getModel('klarnaCheckout/newsletter')->signForNewsletter($mo, Mage::app()->getStore()->getWebsiteId());
+			Mage::getModel('klarnaCheckout/newsletter')->signForNewsLetter($mo, Mage::app()->getStore()->getWebsiteId());
 	}
 
 	/**

@@ -24,6 +24,21 @@ class Avenla_KlarnaCheckout_Model_Payment_KCOv3 extends Avenla_KlarnaCheckout_Mo
 	protected $_code = 'klarnaCheckout_payment_v3';
 
 	/**
+	 * Check if Klarna Checkout is available
+	 *
+	 * @param   Mage_Sales_Model_Quote|null $quote
+	 * @return  bool
+	 */
+	public function isAvailable($quote = null)
+	{
+		$api = $this->getConfig()->getApiVersion();
+		if($api == Avenla_KlarnaCheckout_Model_Config::API_TYPE_KCOV2)
+			return false;
+
+		return parent::isAvailable($quote);
+	}
+
+	/**
 	 *  Get order model
 	 *
 	 *  @return Avenla_KlarnaCheckout_Model_Order_Kcov3

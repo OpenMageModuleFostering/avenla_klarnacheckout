@@ -133,7 +133,11 @@
 				</div>
 				
 				<div class="full-column">
-					<?php if(Mage::getModel('klarnaCheckout/config')->showGiftMessage()):?>
+					<?php
+						$giftmessage_order = Mage::getStoreConfig('sales/gift_options/allow_order', Mage::app()->getStore()); 
+						$giftmessage_items = Mage::getStoreConfig('sales/gift_options/allow_items', Mage::app()->getStore());
+					?>
+					<?php if(($giftmessage_order || $giftmessage_items) && Mage::getModel('klarnaCheckout/config')->showGiftMessage()):?>
 						<?php echo $this->getChildHtml('cart.giftmessage') ?>
 					<?php endif; ?>
 					<?php echo $this->getChildHtml('checkout.cart.extra') ?>
@@ -180,7 +184,7 @@
 									width += e.getWidth();
 								});
 
-								if(width > $$('div.paymentMenuContainer')[0].getWidth()){
+								if($$('div.paymentMenuContainer')[0] && width > $$('div.paymentMenuContainer')[0].getWidth()){
 									$$('div.payments')[0].removeClassName('payments').addClassName('responsive-payments');
 									$$('div.responsive-payments ul')[0].insert({before: '<span class="paymentnavi-toggle"></span>'});
 								}

@@ -135,7 +135,7 @@ class Avenla_KlarnaCheckout_Model_Order_Kcov3 extends Avenla_KlarnaCheckout_Mode
 		$data['merchant_reference1']              = $this->quote ? $this->quote->getId() : '12345';
 		if(!$isUpdate){
 			$data['merchant_urls']['terms']           = $this->config->getTermsUri();
-			$data['merchant_urls']['checkout']        = $this->helper->getCheckoutUri();
+			$data['merchant_urls']['checkout']        = $this->helper->getCartUri();
 			$data['merchant_urls']['confirmation']    = $this->helper->getConfirmationUri($this->type);
 			$data['merchant_urls']['push']            = $this->helper->getPushUri($this->type);
 

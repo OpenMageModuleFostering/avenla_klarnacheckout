@@ -107,3 +107,5 @@
 "Is Custom Checkbox required", "Obligatoriskt att bocka i anpassad kryssruta"
 "Custom Checkbox default value", "Anpassad kryssruta standardvärde"
 "Paste <i>[MyLinkText](www.example.com)</i> and replace placeholders with your own values to get a link.", "Klistra in <i>[LänkText](www.example.com)</i> och ersätt platshållarna med egna värden för att skapa en länk."
+"Available only if you have enabled B2B with Klarna", "Bekräfta att ditt kontrakt med Klara tillåter B2B."
+"Terms URL for B2B", "Villkor för B2B (URL)"

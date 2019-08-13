@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Avenla_KlarnaCheckout>
-            <version>1.3.0</version>
+            <version>1.3.1</version>
         </Avenla_KlarnaCheckout>
     </modules>
     <global>

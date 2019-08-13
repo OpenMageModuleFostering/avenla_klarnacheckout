@@ -93,6 +93,8 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             $create['merchant_reference']['orderid1']   = $this->quote ? $this->quote->getId() : '12345';
             $create['gui']['options']                   = array('disable_autofocus');
 			$create['gui']['layout']					= $this->mobile ? 'mobile' : 'desktop';
+            $layout = $this->mobile ? 'mobile' : 'desktop';
+            Mage::log($layout);
             
             $info = $this->getCustomerInfo();
             
@@ -170,11 +172,13 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     private function getCustomerInfo()
     {
         $info = array();
+        
         if($this->quote){
             $sa = $this->quote->getShippingAddress();
             $sa->getPostcode() != null ? $info['postal_code'] = $sa->getPostcode() : '';
             $sa->getEmail() != null ? $info['email'] = $sa->getEmail() : '';
         }
+
         return $info;
     }
     

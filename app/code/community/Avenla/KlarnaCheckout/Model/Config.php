@@ -223,4 +223,24 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
     {
         return $this->getConfigData('default_checkout');
     }
+
+    /**
+     * Get layout selection for KCO cart
+     * 
+     * @return string
+     */
+    public function getKcoLayout()
+    {
+        return $this->getConfigData('kco_layout');
+    }
+
+    /**
+     * Show sign for newsletter checkbox
+     * 
+     * @return bool
+     */
+    public function showNewsletter()
+    {
+        return $this->getConfigData('show_newsletter');
+    }
 }

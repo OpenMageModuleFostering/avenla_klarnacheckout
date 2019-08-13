@@ -53,7 +53,7 @@
 					$now = new Zend_Date();
 				?>
 				<?php if(strtotime($info->getAdditionalInformation("klarna_order_reservation_expiration")) < $now->get()): ?>
-					<p class="klarna_alert"><?php echo $this->__('Klarna reservation has expired.'); ?></p>
+					<p class="klarnaAlert" style="font-weight:bold; color:red;"><?php echo $this->__('Klarna reservation has expired.'); ?></p>
 				<?php endif; ?>
 			<?php endif; ?>
 		</b></p>

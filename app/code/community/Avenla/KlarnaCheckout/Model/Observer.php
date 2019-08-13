@@ -114,6 +114,9 @@ class Avenla_KlarnaCheckout_Model_Observer
         $block = $observer->getBlock();
         $isLogged = Mage::helper('customer')->isLoggedIn();
         
+        if(!Mage::getModel('klarnaCheckout/config')->isActive())
+            return $this;
+
         if (
             $block->getType() == 'checkout/onepage_login' ||
             ($isLogged && $block->getType() == 'checkout/onepage_billing') ||
@@ -125,7 +128,6 @@ class Avenla_KlarnaCheckout_Model_Observer
             $child->setType('klarnaCheckout/KCO_Link');
             $block->setChild('original', $child);
             $block->setTemplate('KCO/link.phtml');
-        
         }
     }
     
@@ -160,9 +162,16 @@ class Avenla_KlarnaCheckout_Model_Observer
      */
     public function layoutLoadBefore($observer)
     {
-         if (Mage::getModel('klarnaCheckout/config')->hideDefaultCheckout()){
+        if (Mage::getModel('klarnaCheckout/config')->hideDefaultCheckout()){
             $observer->getEvent()->getLayout()->getUpdate()
                 ->addHandle('kco_only');
+        }
+
+        $kco_layout = Mage::getModel('klarnaCheckout/config')->getKcoLayout();
+        
+        if($observer->getAction()->getFullActionName() == "checkout_cart_index" && ($kco_layout && $kco_layout != "default")){
+            $observer->getEvent()->getLayout()->getUpdate()
+                ->addHandle($kco_layout);
         }
     }
 }

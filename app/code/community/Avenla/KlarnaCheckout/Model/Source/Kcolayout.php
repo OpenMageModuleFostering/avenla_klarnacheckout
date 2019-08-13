@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is released under a custom license by Avenla Oy.
  * All rights reserved
@@ -18,12 +18,22 @@
  * @category   Avenla
  * @package    Avenla_KlarnaCheckout
  */
-?>
-<?php $helper = Mage::helper("klarnaCheckout"); ?>
+ 
+class Avenla_KlarnaCheckout_Model_Source_Kcolayout
+{
+    public function toOptionArray()
+    {
+    	$options = array(
+			array(
+				'label' => Mage::helper('klarnaCheckout')->__('Default'),
+				'value' => 'default'
+			),
+			array(
+				'label' => Mage::helper('klarnaCheckout')->__('Two columns'),
+				'value' => 'kco_twocolumns'
+			)
+		);
 
-<a href="<?php echo $helper->getCartUri();?>" class="klarnaLink">
-  <img src="<?php echo $helper->getLogoSrc(); ?>" alt="Klarna Checkout" />
-  <p class="klarnaLinkText"><?php echo $this->__($helper->getLinkText());?></p>
-</a>
-
-<?php echo $this->getChildHtml('original'); ?>
+		return $options;
+    }
+}

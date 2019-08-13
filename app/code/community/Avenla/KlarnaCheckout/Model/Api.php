@@ -91,6 +91,9 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
             if($item->getQtyShipped() > $item->getQtyInvoiced()){
                 $qtys[$item->getId()] = $item->getQtyShipped() - $item->getQtyInvoiced();
             }
+            else{
+                $qtys[$item->getId()] = 0;
+            }
             
             if($item->getQtyShipped() != $item->getQtyOrdered())
                 $partial = true;

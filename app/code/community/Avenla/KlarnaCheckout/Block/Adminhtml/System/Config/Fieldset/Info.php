@@ -44,7 +44,8 @@ class Avenla_KlarnaCheckout_Block_Adminhtml_System_Config_Fieldset_Info extends 
      *
      * @return  array
      */
-    public function getAlerts(){
+    public function getAlerts()
+    {
         $alerts = array();
         
         if(!$this->helper->getConnectionStatus())

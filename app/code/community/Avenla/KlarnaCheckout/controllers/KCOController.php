@@ -247,6 +247,9 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
             else{
                 $mo->getSendConfirmation(null);
                 $mo->sendNewOrderEmail();
+
+                if($mo->getPayment()->getAdditionalInformation("klarna_newsletter"))
+                    Mage::getModel('klarnaCheckout/newsletter')->signForNewsletter($mo, Mage::app()->getStore()->getWebsiteId());
             }
         }
         else{
@@ -257,7 +260,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
                 Mage::getModel('klarnaCheckout/api')->cancelReservation($ko['reservation']);
                 Mage::log("Couldn't find quote id for Klarna reservation " . $ko['reservation']);
             }
-        }  
+        }
     }
     
     /**
@@ -302,5 +305,33 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $quote->setIsActive(false)->save();
         Mage::getSingleton('checkout/session')->clear();
+    }
+
+    /**
+     * Subscribe to newsletter
+     * 
+     */
+    public function newsletterAction()
+    {
+        $result = array();
+        $status = false;
+        $customerSession = Mage::getSingleton('customer/session');
+
+        if($this->getRequest()->getParam('status') == true)
+            $status = true;
+
+        if ($status && Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_ALLOW_GUEST_SUBSCRIBE_FLAG) != 1 && 
+            !$customerSession->isLoggedIn()) {
+            $result['letter_msg'] = $this->__(
+                'Sorry, but administrator denied subscription for guests. Please <a href="%s">register</a>.',
+                Mage::helper('customer')->getRegisterUrl()
+            );
+            $status = false;
+        }
+
+        $result['msg'] = ' ';
+
+        Mage::getModel('klarnaCheckout/newsletter')->addNewsletterStatus($status);
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }
 }

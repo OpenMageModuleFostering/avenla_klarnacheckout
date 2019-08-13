@@ -33,16 +33,17 @@
 		var kcoloadurl = '<?php echo $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/", array("_secure" => true)) ?>';
 		
 		if($$('div.payments')[0]){
-			if($$('div.payments')[0].getWidth() < 750)
+			if($$('div.payments')[0].getWidth() < 600)
 				kcoloadurl = kcoloadurl + 'mobile/1';
 		}
-	
+	   
         new Ajax.Request(kcoloadurl, {
             method:'POST',
             onSuccess: function(k) {
                 var response = eval("(" + k.responseText + ")");
                 if(response.msg){
                     $('klarnaMsg').update('<h2>'+ response.msg +'</h2>').show();
+                    $('klarnaOverlay').show();
                 }
                 else{
                     $('klarnaMsg').update('').hide();

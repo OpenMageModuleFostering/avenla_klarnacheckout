@@ -55,19 +55,34 @@
 		<reference name="checkout.cart">
 			<action method="setCartTemplate" ifconfig="payment/klarnaCheckout_payment/active"><value>KCO/cart.phtml</value></action>
 			<action method="chooseTemplate"/>
-			<block type="klarnaCheckout/KCO" name="checkout.cart.klarnacheckout" as="klarnacheckout" template="KCO/KCO.phtml" />
-		</reference>    
-		<reference name="checkout.cart.shipping">
-			<action method="setTemplate" ifconfig="payment/klarnaCheckout_payment/active"><template>KCO/cart/shipping.phtml</template></action>	
+			<action method="addItemRender" ifconfig="payment/klarnaCheckout_payment/active">
+				<type>simple</type><block>checkout/cart_item_renderer</block><template>KCO/cart/item/default.phtml</template>
+			</action>
+            <action method="addItemRender" ifconfig="payment/klarnaCheckout_payment/active">
+            	<type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>KCO/cart/item/default.phtml</template>
+        	</action>
+            <action method="addItemRender" ifconfig="payment/klarnaCheckout_payment/active">
+        		<type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>KCO/cart/item/default.phtml</template>
+        	</action>
+            <block type="klarnaCheckout/KCO" name="checkout.cart.klarnacheckout" as="klarnacheckout" template="KCO/KCO.phtml" />
 		</reference>
 		<reference name="checkout.cart.crosssell">
 	  		<action method="setTemplate" ifconfig="payment/klarnaCheckout_payment/active"><template>KCO/cart/crosssell.phtml</template></action>	
+		</reference>
+		<reference name="checkout.cart.shipping">
+			<action method="setTemplate" ifconfig="payment/klarnaCheckout_payment/active"><template>KCO/cart/shipping.phtml</template></action>	
 		</reference>
 		<reference name="checkout.cart.methods.onepage">
 			<action method="setTemplate" ifconfig="payment/klarnaCheckout_payment/active"><template>KCO/onepage/link.phtml</template></action>
 		</reference>
 	</checkout_cart_index>
 
+	<checkout_onepage_index>
+		<reference name="head">
+				<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>
+		</reference>
+	</checkout_onepage_index>
+	
 	<catalog_product_view>
 		<block type="klarnaCheckout/catalog_product_ppwidget" template="KCO/catalog/product/ppwidget.phtml" name="klarna_pp_widget" />
         <reference name="head">
@@ -83,6 +98,15 @@
 	        </action>
         </reference>
     </catalog_product_view>
+	
+    <kco_twocolumns>
+		<reference name="checkout.cart">
+			<action method="setCartTemplate" ifconfig="payment/klarnaCheckout_payment/active">
+				<value>KCO/cart_twocolumns.phtml</value>
+			</action>
+			<action method="chooseTemplate"/>
+		</reference>
+	</kco_twocolumns>
 	
 </layout>
 

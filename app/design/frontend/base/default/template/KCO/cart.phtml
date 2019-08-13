@@ -38,47 +38,30 @@
 		<?php echo $this->getBlockHtml('formkey'); ?>
         <fieldset>
             <table id="shopping-cart-table" class="data-table cart-table">
-                <col width="1" />
-                <col />
-                <col width="1" />
-            <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
-                <col width="1" />
-            <?php endif ?>
-            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-                <col width="1" />
-            <?php endif; ?>
-            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-                <col width="1" />
-            <?php endif; ?>
-                <col width="1" />
-            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-                <col width="1" />
-            <?php endif; ?>
-            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-                <col width="1" />
-            <?php endif; ?>
-                <col width="1" />
-
-            <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+                <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
                 <thead>
                     <tr>
-                        <th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
-                        <th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
-                        <th rowspan="<?php echo $mergedCells; ?>"></th>
-                        <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><span class="nobr"><?php echo $this->__('Move to Wishlist') ?></span></th>
-                        <?php endif ?>
-                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
-                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center">&nbsp;</th>
+                        <th rowspan="<?php echo $mergedCells; ?>" ><span class="nobr"><?php echo $this->__('Product') ?></span></th>
+
+                        <th rowspan="<?php echo $mergedCells; ?>" class="hideToFit">&nbsp;</th>
+
+                        <th class="a-center cart-price-head" colspan="<?php echo $mergedCells; ?>">
+                                <span class="nobr"><?php echo $this->__('Price') ?></span>
+                        </th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center">
+                            <?php echo $this->__('Qty') ?>
+                        </th>
+                        <th class="a-center cart-total-head" colspan="<?php echo $mergedCells; ?>">
+                                <?php echo $this->__('Subtotal') ?>
+                        </th>
+                        <th class="a-center" rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
                     </tr>
                     <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
                     <tr>
-                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
-                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        <th class="a-center cart-price-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th class="a-center cart-price-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        <th class="a-center cart-total-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th class="a-center cart-total-head"><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
                     </tr>
                     <?php endif; ?>
                 </thead>
@@ -126,7 +109,7 @@
     </form>
 
 	
-    <div class="cart-collaterals">
+    <div class="cart-collaterals cart-forms">
 		<div class="col1-set">
 			<div class="col-1">
 				<?php echo $this->getChildHtml('crosssell') ?>
@@ -140,15 +123,20 @@
 		
         <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
 		
-		<div class="col2-set totals_row">
+		<div class="col2-set totalsRow">
 			<div class="col-1">
 				<?php echo $this->getChildHtml('coupon') ?>
+                <?php
+                    if(Mage::getModel('klarnaCheckout/config')->showNewsletter())
+                        echo $this->getLayout()->createBlock('klarnaCheckout/KCO_newsletter')->toHtml();
+                ?>
 			</div>
 			<div class="col-2">
-				<div class="totals">
+				<div class="totals cart-totals">
 					<?php echo $this->getChildHtml('totals'); ?>
 				</div>
 			</div>
+
 		</div>	
 		<div class="col1-set">
 			<div class="col-1">
@@ -157,7 +145,11 @@
                         <?php if(!Mage::getModel('klarnaCheckout/config')->hideDefaultCheckout()): ?>
         					<div class="paymentMenuContainer">
         						<ul>
-        							<li class="active"><a href="#"><?php echo Mage::getSingleton('klarnaCheckout/config')->getTitle(); ?></a></li>
+        							<li class="active">
+                                        <a href="#">
+                                            <img src="<?php echo $this->getSkinUrl('KCO/klarna_simplifying.png') ?>" alt="<?php echo Mage::getSingleton('klarnaCheckout/config')->getTitle(); ?>" />
+                                        </a>
+                                    </li>
         							<?php foreach ($this->getMethods('methods') as $method): ?>
         								<?php if ($methodHtml = $this->getMethodHtml($method)): ?>
         								<?php if(strlen(preg_replace( "/\r|\n/", "", $methodHtml)) > 0): ?>	
@@ -168,37 +160,38 @@
         						</ul>
                             </div>
                         <?php endif; ?>
-					<div class="payment_container">
+					<div class="paymentContainer">
 						<?php echo $this->getChildHtml('klarnacheckout'); ?>
 					</div>
 					<script>
-						document.observe('dom:loaded', function(){
-							var width = 0;
-							
-							$$('div.payments ul li').each(function(e){
-								width += e.getWidth();
-								width += 5;
-							});
-							
-							if(width > $$('div.col-main')[0].getWidth()){
-								$$('div.payments')[0].removeClassName('payments').addClassName('responsive-payments');
-								$$('div.responsive-payments ul')[0].insert({before: '<span class="paymentnavi-toggle"></span>'});
-							}
-							if($$('.paymentnavi-toggle')[0] !== undefined){
-								$$('.paymentnavi-toggle')[0].observe('click', function(event) {
-									$$('div.responsive-payments ul li').each(function(e, index){
-										if(index > 0){
-											if(e.visible()){
-												e.style.display = 'none';
-											}
-											else{
-												e.style.display = 'block';
-											}
-										}
-									});
-								});
-							}
-						});
+						Event.observe(window, 'load', function() {
+                            var width = 0;
+                            $$('div.payments ul li').each(function(e){
+                                width += e.getWidth();
+                            });
+
+                            if(width > $$('div.paymentMenuContainer')[0].getWidth()){
+                                $$('div.payments')[0].removeClassName('payments').addClassName('responsive-payments');
+                                $$('div.responsive-payments ul')[0].insert({before: '<span class="paymentnavi-toggle"></span>'});
+                            }
+
+                            if($$('.paymentnavi-toggle')[0] !== undefined){
+                                $$('.paymentnavi-toggle')[0].observe('click', function(event){
+                                    $$('div.responsive-payments ul li').each(function(e, index){
+                                        if(index > 0){
+                                            var display = window.getComputedStyle(e).display;                                               
+                                            if(display == "none"){
+                                                e.style.display = 'block';
+                                            }
+                                            else{
+                                                e.style.display = 'none';
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+
+                        });
 					</script>
 					<?php endif; ?>
 				</div>

@@ -26,5 +26,4 @@ class Avenla_KlarnaCheckout_Model_Source_Taxclass
         $options = Mage::getModel('tax/class_source_product')->toOptionArray();
         return $options;
     }
-
 }

@@ -49,3 +49,7 @@
 "Hide links to default Checkout", "Piilota linkit kassasivulle"
 "Text shown in Klarna link at Magento Checkout", "Kassan linkissä näytettävä teksti"
 "Please specify a shipping method.", "Ole hyvä ja täytä puhelinnumerosi."
+"Cart page layout", "Ostoskori sivun asettelu"
+"Show newsletter subscription checkbox", "Näytä valintaruutu uutiskirjeen tilaamiseen"
+"Default", "Oletus"
+"Two columns", "Kaksi palstaa"

@@ -19,20 +19,19 @@
  * @package    Avenla_KlarnaCheckout
  */
 ?>
-<?php if($this->getWidgetType() == "klarna"): ?>
-	<?php $params = $this->getWidgetData(); ?>
-	<?php if($params['price']): ?>
-		<div style="width:<?php echo $params['width']; ?>px; height:<?php echo $params['height']; ?>px" 
-		     class="klarna-widget klarna-part-payment"
-		     data-eid="<?php echo $params['eid']; ?>"
-		     data-locale="<?php echo $params['locale']; ?>"
-		     data-price="<?php echo $params['price']; ?>"
-		     data-layout="<?php echo $params['layout']; ?>">
+<?php if($data = $this->getWidgetData()): ?>
+	<?php if($monthly = $data->getMonthlyPrice()): ?>
+		<div class="kco-ppayment">
+			<p><?php echo Mage::helper('klarnaCheckout')->__("From %s/mo.", $monthly); ?></p>
+			<img src="<?php echo Mage::helper('klarnaCheckout')->getLogoSrc(50); ?>" />
 		</div>
-	<?php endif; ?>	
-<?php elseif($this->getWidgetType() == "product" && $this->getWidgetData()): ?>
-	<div class="kco-ppayment">
-		<p><?php echo $this->getWidgetData(); ?></p>
-		<img src="<?php echo Mage::helper('klarnaCheckout')->getLogoSrc(50); ?>" />
-	</div>
+	<?php elseif($data->getPrice()): ?>
+		<div style="width:<?php echo $data->getWidth(); ?>px; height:<?php echo $data->getHeight(); ?>px" 
+		     class="klarna-widget klarna-part-payment"
+		     data-eid="<?php echo $data->getEid(); ?>"
+		     data-locale="<?php echo $data->getLocale(); ?>"
+		     data-price="<?php echo $data->getPrice(); ?>"
+		     data-layout="<?php echo $data->getLayout(); ?>">
+		</div>
+	<?php endif; ?>
 <?php endif; ?>

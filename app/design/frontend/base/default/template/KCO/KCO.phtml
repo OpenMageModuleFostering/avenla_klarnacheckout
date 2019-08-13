@@ -19,14 +19,7 @@
  * @package    Avenla_KlarnaCheckout
  */
 ?>
-<?php
-    if (Mage::app()->getStore()->isCurrentlySecure()){
-        $kcoloadurl = $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/", array("_forced_secure" => true));
-    }
-    else{
-        $kcoloadurl = $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/");    
-    } 
-?>
+
 <div id="klarnaMsg" style="display:none"><h2></h2></div>
 
 <div id="klarnaWrapper" name="klarnaWrapper">
@@ -37,13 +30,8 @@
 <script>
     function loadFrame()
     {
-        var kcoloadurl = '<?php echo $kcoloadurl; ?>';
+        var kcoloadurl = '<?php echo $this->getLoadUrl(); ?>';
         
-		if($$('div.payments')[0]){
-			if($$('div.payments')[0].getWidth() < 600)
-				kcoloadurl = kcoloadurl + 'mobile/1';
-		}
-	   
         new Ajax.Request(kcoloadurl, {
             method:'POST',
             onSuccess: function(k) {
@@ -90,8 +78,7 @@
             },250);
         }
     }
-
-
+    
     document.observe('dom:loaded', function(){
         loadFrame();
     });

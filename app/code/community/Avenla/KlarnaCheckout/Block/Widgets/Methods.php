@@ -24,7 +24,7 @@ class Avenla_KlarnaCheckout_Block_Widgets_Methods extends Mage_Core_Block_Templa
 	protected function _toHtml()
 	{
 		$beforeBodyEnd = $this->getLayout()->getBlock('before_body_end');
-		$script = $this->getLayout()->createBlock('core/text')->setText('<script async src="https://cdn.klarna.com/1.0/code/client/all.js"></script>');
+		$script = $this->getLayout()->createBlock('core/text')->setText('<script async src="' . Avenla_KlarnaCheckout_Model_Config::KLARNA_WIDGET_SCRIPT . '"></script>');
 		$beforeBodyEnd->append($script);
 
 		$this->setTemplate('KCO/widget/methods.phtml');
@@ -34,11 +34,8 @@ class Avenla_KlarnaCheckout_Block_Widgets_Methods extends Mage_Core_Block_Templa
 			$width = 350;
 
 		$this->setWidth($width);
-		$locale = strtolower(Mage::app()->getLocale()->getLocaleCode());
-		$this->setLocale($locale);
+		$this->setLocale(strtolower(Mage::app()->getLocale()->getLocaleCode()));
 
 		return parent::_toHtml();
 	}
-
-
 }

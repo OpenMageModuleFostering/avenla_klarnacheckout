@@ -32,17 +32,22 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
 	{
         $this->helper = Mage::helper('klarnaCheckout/api');
         $this->klarna = new Klarna();
-        $this->klarna->setCountry($this->helper->getCountry());
-		$config = Mage::getSingleton('klarnaCheckout/KCO')->getConfig();
+
+        $locale = $this->klarna->getLocale($this->helper->getCountry());
+        $config = Mage::getSingleton('klarnaCheckout/KCO')->getConfig();
 		
         try{
             $this->klarna->config(
                 $config->getKlarnaEid(),
                 $config->getKlarnaSharedSecret(),
-                $this->klarna->getCountry(),
-                $this->klarna->getLanguage(),
-                $this->klarna->getCurrency(),
-                $config->isLive() ?  Klarna::LIVE : Klarna::BETA
+                $locale['country'],
+                $locale['language'],
+                $locale['currency'],
+                $config->isLive() ?  Klarna::LIVE : Klarna::BETA,
+                'json',
+                Mage::getBaseDir('lib').'/Klarna/pclasses/'.$config->getKlarnaEid().'_pclass_'.$locale['country'].'.json',
+                true,
+                true
             );
         }
         catch (Exception $e) {
@@ -79,24 +84,58 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
      * Check if activation is partial or full
      * 
      * @param   Magento_Sales_Order $mo
-     * @return  mixed
+     * @return  array | false
      */
     private function checkIfPartial($mo)
     {
         $qtys = array();
         $partial = false;
-        
-        foreach ($mo->getAllVisibleItems() as $item)
-        {
-            if($item->getQtyShipped() > $item->getQtyInvoiced()){
-                $qtys[$item->getId()] = $item->getQtyShipped() - $item->getQtyInvoiced();
-            }
+
+        foreach($mo->getAllVisibleItems() as $item){
+
+            if($item->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE){
+                if($item->isChildrenCalculated()){
+                    foreach($item->getChildrenItems() as $child){
+                        $qtys[$child->getId()] = $child->getQtyShipped() - $child->getQtyInvoiced();
+
+                        if($child->getQtyOrdered() != $child->getQtyShipped())
+                            $partial = true;
+                    }
+                }
+                else{
+                    if($item->isDummy()){
+                        $bundleQtys = array();
+                        foreach($item->getChildrenItems() as $child){
+                            $parentCount = 0;
+                            $bundleCount = $child->getQtyOrdered() / $item->getQtyOrdered();
+                            $qtyInvoiced = $bundleCount * $item->getQtyInvoiced();
+                            $diff = $child->getQtyShipped() - $qtyInvoiced;
+                            
+                            if($diff >= $bundleCount)
+                                $parentCount = floor($bundleCount / $diff);
+                            
+                            $bundleQtys[] = $parentCount;
+
+                            if($child->getQtyOrdered() != $child->getQtyShipped())
+                                $partial = true;
+                        }
+
+                        $qtys[$item->getId()] = min($bundleQtys);
+                    }
+                    else{
+                        $qtys[$item->getId()] = $item->getQtyShipped() - $item->getQtyInvoiced();
+                        
+                        if($item->getQtyShipped() != $item->getQtyOrdered())
+                            $partial = true;
+                    }
+                }
+            }   
             else{
-                $qtys[$item->getId()] = 0;
+                $qtys[$item->getId()] = $item->getQtyShipped() - $item->getQtyInvoiced();
+
+                if($item->getQtyShipped() != $item->getQtyOrdered())
+                    $partial = true;
             }
-            
-            if($item->getQtyShipped() != $item->getQtyOrdered())
-                $partial = true;
         }
 
         if($partial)
@@ -120,6 +159,11 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
         foreach($qtys as $key => $qty){
             $sku = Mage::getModel('sales/order_item')->load($key)->getSku();
             $this->klarna->addArtNo($qty, $sku);
+        }
+
+        $klarnainvoices = $this->helper->getKlarnaInvoices($mo);
+        if(empty($klarnainvoices)){
+            $this->klarna->addArtNo(1, 'shipping_fee');
         }
         
         try{
@@ -200,7 +244,7 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
             'risk'      => $result[0]
         );
 
-        $mo->addStatusHistoryComment($this->helper->__('Captured amount of %s .Created Klarna invoice %s', $amount, $result[1]));
+        $mo->addStatusHistoryComment($this->helper->__('Created Klarna invoice %s', $result[1]));
         $mo = $this->helper->saveKlarnaInvoices($mo, $klarnainvoices);
         
         return $mo;
@@ -224,7 +268,6 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
             $mo->getPayment()->setAdditionalInformation(
 				'klarna_message',
 				'Reservation was activated after expiration (expired '.$formattedExpiration.')'
-
 			);
         }
         return $mo;
@@ -240,12 +283,16 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
     public function activateFromInvoice($mo, $invoice)
     {
         if($rno = $this->helper->getReservationNumber($mo)){
-            
             if (abs($mo->getTotalDue() - $invoice->getGrandTotal()) > .0001){
-                foreach($invoice->getAllItems() as $item)
-                {
-                    $this->klarna->addArtNo($item->getQty(), $item->getSku());
+                foreach($invoice->getAllItems() as $item){
+                    if(!$item->getOrderItem()->isDummy()){
+                        $this->klarna->addArtNo($item->getQty(), $item->getSku());
+                    }
                 }
+            }
+
+            if($invoice->getShippingAmount() > 0){
+                $this->klarna->addArtNo(1, 'shipping_fee');
             }
 
             try{
@@ -410,5 +457,53 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
 			Mage::logException($e);
             return false;
         }  
+    }
+    
+    /**
+     * Get cheapest monthly price
+     * 
+     * @param   float $price
+     * @return  string | bool
+     */
+    public function getMonthlyPrice($price)
+    {
+        if($pclass = $this->klarna->getCheapestPClass($price, KlarnaFlags::PRODUCT_PAGE)){
+            $value = KlarnaCalc::calc_monthly_cost(
+                $price,
+                $pclass,
+                KlarnaFlags::PRODUCT_PAGE
+            );
+
+            $country = $pclass->getCountry();
+            $currency = KlarnaCurrency::getCode(KlarnaCountry::getCurrency($pclass->getCountry()));
+            
+            try{
+                $currency = Mage::app()->getLocale()->currency(strtoupper($currency))->getSymbol();
+            }            
+            catch(Exception $e){
+                Mage::logException($e);
+            }
+
+            return $value . $currency;
+        }
+
+        return false;
+    }
+
+    /**
+     * Update Klarna PClasses
+     * 
+     * @return string
+     */
+    public function updatePClasses()
+    {
+        try {
+            $this->klarna->fetchPClasses();
+            return $this->helper->__('PClasses updated successfully');
+        }
+        catch(Exception $e) {
+            Mage::logException($e);
+            return $e->getMessage();
+        }
     }
 }

@@ -48,7 +48,16 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         }
 		
         if(!$kco->isAvailable($quote)){
-            $result['msg'] = $this->__("Klarna Checkout is not available");
+            if(!(Mage::getSingleton('customer/session')->isLoggedIn() || Mage::helper('checkout')->isAllowedGuestCheckout($quote))){
+                $result['msg'] = $this->__("Please login to use Klarna Checkout");
+                $this->loadLayout();
+                Mage::getSingleton('customer/session')->setBeforeAuthUrl(Mage::getUrl('checkout/cart'));
+                $result['klarnaframe'] = $this->getLayout()->createBlock('customer/form_login')->setTemplate('customer/form/mini.login.phtml')->toHtml();
+                $result['kcologin'] = true;
+            }
+            else{
+                $result['msg'] = $this->__("Klarna Checkout is not available");
+            }
         }
         else{
             $ko = null;
@@ -107,7 +116,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         }
         
         if($redirect){
-            header('Location: ' . Mage::helper('checkout/url')->getCartUrl()); 
+            header('Location: ' . Mage::helper('checkout/url')->getCartUrl());
             exit();
         }
     }
@@ -137,6 +146,27 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
     }
 
     /**
+     *  Action for saving gift message form
+     *
+     */
+    public function saveGiftMessageAction()
+    {
+        Mage::dispatchEvent(
+            'kco_save_giftmessage',
+            array(
+                'request' => $this->getRequest(),
+                'quote'   => Mage::getSingleton('checkout/session')->getQuote()
+            )
+        );
+
+        $result = array();
+
+        $result['msg'] = $this->__('Gift message saved successfully');
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+    }
+
+
+    /**
      * Convert Klarna address to Magento address
      *
      * @param  array $address
@@ -154,6 +184,8 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         	? $address['street_address'] 
         	: $address['street_name']  . " " . $address['street_number'];
 
+        $phone = strlen($address['phone'] > 0) ? $address['phone'] : '1';
+
         $magentoAddress = array(
             'firstname'             => $address['given_name'],
             'lastname'              => $address['family_name'],
@@ -164,7 +196,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
             'region'                => $region,
             'postcode'              => $address['postal_code'],
             'country_id'            => strtoupper($address['country']),
-            'telephone'             => $address['phone']
+            'telephone'             => $phone
         );
  
         return $magentoAddress;
@@ -279,6 +311,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         $quote->collectTotals()->save();
         $service = Mage::getModel('sales/service_quote', $quote);
         $service->submitAll();
+        $quote->setIsActive(false)->save();
 		
         return $service->getOrder();
     }

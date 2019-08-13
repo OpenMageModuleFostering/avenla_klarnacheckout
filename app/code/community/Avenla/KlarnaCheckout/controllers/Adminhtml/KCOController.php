@@ -18,14 +18,15 @@
  * @category   Avenla
  * @package    Avenla_KlarnaCheckout
  */
-?>
-<?php $params = $this->getWidgetParams(); ?>
-<?php if($params['price']): ?>
-	<div style="width:<?php echo $params['width']; ?>px; height:<?php echo $params['height']; ?>px" 
-	     class="klarna-widget klarna-part-payment"
-	     data-eid="<?php echo $params['eid']; ?>"
-	     data-locale="<?php echo $params['locale']; ?>"
-	     data-price="<?php echo $params['price']; ?>"
-	     data-layout="<?php echo $params['layout']; ?>">
-	</div>
-<?php endif; ?>
+class Avenla_KlarnaCheckout_Adminhtml_KCOController extends Mage_Adminhtml_Controller_Action
+{
+	/**
+	 *	Update Klarna PClasses
+	 *
+	 */
+    public function updatePClassesAction()
+    {
+        $result = Mage::getModel('klarnaCheckout/api')->updatePClasses();
+        Mage::app()->getResponse()->setBody($result);
+    }
+}

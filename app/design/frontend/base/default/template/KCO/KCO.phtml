@@ -19,7 +19,14 @@
  * @package    Avenla_KlarnaCheckout
  */
 ?>
-
+<?php
+    if (Mage::app()->getStore()->isCurrentlySecure()){
+        $kcoloadurl = $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/", array("_forced_secure" => true));
+    }
+    else{
+        $kcoloadurl = $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/");    
+    } 
+?>
 <div id="klarnaMsg" style="display:none"><h2></h2></div>
 
 <div id="klarnaWrapper" name="klarnaWrapper">
@@ -30,8 +37,8 @@
 <script>
     function loadFrame()
     {
-		var kcoloadurl = '<?php echo $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/", array("_secure" => true)) ?>';
-		
+        var kcoloadurl = '<?php echo $kcoloadurl; ?>';
+        
 		if($$('div.payments')[0]){
 			if($$('div.payments')[0].getWidth() < 600)
 				kcoloadurl = kcoloadurl + 'mobile/1';
@@ -43,18 +50,43 @@
                 var response = eval("(" + k.responseText + ")");
                 if(response.msg){
                     $('klarnaMsg').update('<h2>'+ response.msg +'</h2>').show();
-                    $('klarnaOverlay').show();
+                    if(!response.kcologin){
+                        $('klarnaOverlay').show();
+                    }
+                    else{
+                        $('klarnaOverlay').hide();                        
+                    }
                 }
                 else{
                     $('klarnaMsg').update('').hide();
                     $('klarnaOverlay').hide();
                 }
 
-                if(response.klarnaframe)
+                if(response.klarnaframe){
                     $('klarnaFrame').update(response.klarnaframe);
+                    waitForKlarna();
+                }
             }
         });
     }
+
+    function waitForKlarna(){
+        if(typeof window._klarnaCheckout !== "undefined"){
+            window._klarnaCheckout(function(api) {
+                api.on({
+                    'change': function(data){
+
+                    }
+                });
+            });
+        }
+        else{
+            setTimeout(function(){
+                waitForKlarna();
+            },250);
+        }
+    }
+
 
     document.observe('dom:loaded', function(){
         loadFrame();

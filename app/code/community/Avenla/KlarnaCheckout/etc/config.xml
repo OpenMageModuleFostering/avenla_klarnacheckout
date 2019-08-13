@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Avenla_KlarnaCheckout>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </Avenla_KlarnaCheckout>
     </modules>
     <global>
@@ -31,6 +31,16 @@
 			<klarnaCheckout>
 				<class>Avenla_KlarnaCheckout_Block</class>
 			</klarnaCheckout>
+			<catalog>
+                <rewrite>
+                    <product_price>Avenla_KlarnaCheckout_Block_Catalog_Product_Price</product_price>
+                </rewrite>
+            </catalog>
+            <bundle>
+                <rewrite>
+                    <catalog_product_price>Avenla_KlarnaCheckout_Block_Catalog_Product_Price</catalog_product_price>
+                </rewrite>
+            </bundle>
 		</blocks>
 		<models>
 			<klarnaCheckout>
@@ -74,6 +84,15 @@
 					</avenla_klarnacheckout_sales_order_invoice_save_after>
 				</observers>
 			</sales_order_invoice_save_after>
+			<kco_save_giftmessage>
+				<observers>
+					<avenla_klarnacheckout_save_giftmessage>
+						<type>model</type>
+                        <class>giftmessage/observer</class>
+                        <method>checkoutEventCreateGiftMessage</method>
+					</avenla_klarnacheckout_save_giftmessage>
+				</observers>
+			</kco_save_giftmessage>
 		</events>
 	</global>
 	<default>
@@ -140,7 +159,6 @@
       		</controller_action_layout_load_before>
 		</events>
 	</frontend>
-	
 	<adminhtml>
 		<translate>
 			<modules>

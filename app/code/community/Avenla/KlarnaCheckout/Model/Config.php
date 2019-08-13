@@ -199,7 +199,7 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
      * 
      * @return bool
      */
-    public function isPpwidgetActive()
+    public function getPpWidgetSelection()
     {
         return $this->getConfigData('pp_widget');
     }
@@ -242,5 +242,15 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
     public function showNewsletter()
     {
         return $this->getConfigData('show_newsletter');
+    }
+
+    /**
+     * Show gift message form on cart page
+     * 
+     * @return bool
+     */
+    public function showGiftMessage()
+    {
+        return $this->getConfigData('show_giftmessage');
     }
 }

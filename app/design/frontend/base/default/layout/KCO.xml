@@ -52,6 +52,7 @@
 			<action method="unsetChild" ifconfig="payment/klarnaCheckout_payment/active"><name>checkout.cart.methods.onepage.top</name></action>
 			<action method="unsetChild" ifconfig="payment/klarnaCheckout_payment/active">"<name>checkout.cart.methods.onepage</name></action>
 		</reference>
+
 		<reference name="checkout.cart">
 			<action method="setCartTemplate" ifconfig="payment/klarnaCheckout_payment/active"><value>KCO/cart.phtml</value></action>
 			<action method="chooseTemplate"/>
@@ -65,7 +66,9 @@
         		<type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>KCO/cart/item/default.phtml</template>
         	</action>
             <block type="klarnaCheckout/KCO" name="checkout.cart.klarnacheckout" as="klarnacheckout" template="KCO/KCO.phtml" />
+            <block type="core/template" name="cart.giftmessage" as="cart.giftmessage" template="KCO/cart/giftmessage.phtml"/>
 		</reference>
+
 		<reference name="checkout.cart.crosssell">
 	  		<action method="setTemplate" ifconfig="payment/klarnaCheckout_payment/active"><template>KCO/cart/crosssell.phtml</template></action>	
 		</reference>
@@ -79,26 +82,33 @@
 
 	<checkout_onepage_index>
 		<reference name="head">
-				<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>
+			<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>
 		</reference>
 	</checkout_onepage_index>
 	
 	<catalog_product_view>
-		<block type="klarnaCheckout/catalog_product_ppwidget" template="KCO/catalog/product/ppwidget.phtml" name="klarna_pp_widget" />
-        <reference name="head">
+		<reference name="head">
             <block type="core/text" name="klarna_widget_js">
                 <action method="setText" ifconfig="payment/klarnaCheckout_payment/pp_widget">
                 	<text><![CDATA[<script async src="https://cdn.klarna.com/1.0/code/client/all.js"></script>]]></text>
             	</action>
             </block>
-        </reference>
-        <reference name="product.info.extrahint">
-        	<action method="append" ifconfig="payment/klarnaCheckout_payment/pp_widget">
-				<block>klarna_pp_widget</block>	            
-	        </action>
+			<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>
         </reference>
     </catalog_product_view>
-	
+
+    <catalog_category_default>
+		<reference name="head">
+			<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>		
+        </reference>
+    </catalog_category_default>
+
+    <catalog_category_layered>
+		<reference name="head">
+			<action method="addCss" ifconfig="payment/klarnaCheckout_payment/active"><stylesheet>KCO/kco.css</stylesheet></action>		
+        </reference>
+    </catalog_category_layered>
+
     <kco_twocolumns>
 		<reference name="checkout.cart">
 			<action method="setCartTemplate" ifconfig="payment/klarnaCheckout_payment/active">

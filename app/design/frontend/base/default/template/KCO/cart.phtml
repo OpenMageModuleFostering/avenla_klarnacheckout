@@ -117,10 +117,13 @@
 		</div>
 		<div class="col1-set">
 			<div class="col-1">
+                <?php if(Mage::getModel('klarnaCheckout/config')->showGiftMessage()):?>
+                    <?php echo $this->getChildHtml('cart.giftmessage') ?>
+                <?php endif; ?>
 				<?php echo $this->getChildHtml('checkout.cart.extra') ?>
 			</div>
-		</div>
-		
+		</div>        
+
         <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
 		
 		<div class="col2-set totalsRow">

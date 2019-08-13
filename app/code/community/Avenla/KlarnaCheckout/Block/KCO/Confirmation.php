@@ -70,8 +70,6 @@ class Avenla_KlarnaCheckout_Block_KCO_Confirmation extends Mage_Core_Block_Templ
                 $shipping_fee = $p['total_price_including_tax'];
         }
 
-        $gc = '<script type="text/javascript">';
-        $gc .= "//<![CDATA[\n";
         $gc .= 'var _gaq = _gaq || [];';
         $gc .= '_gaq.push(["_setAccount", "' . Mage::getModel('klarnaCheckout/config')->getGoogleAnalyticsNo() . '"]);';
         $gc .= '_gaq.push(["_trackPageview"]);';

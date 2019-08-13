@@ -133,6 +133,9 @@
 				</div>
 				
 				<div class="full-column">
+					<?php if(Mage::getModel('klarnaCheckout/config')->showGiftMessage()):?>
+						<?php echo $this->getChildHtml('cart.giftmessage') ?>
+					<?php endif; ?>
 					<?php echo $this->getChildHtml('checkout.cart.extra') ?>
 					<?php
 						if(Mage::getModel('klarnaCheckout/config')->showNewsletter())

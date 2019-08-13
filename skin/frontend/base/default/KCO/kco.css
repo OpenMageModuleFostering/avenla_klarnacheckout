@@ -110,3 +110,8 @@
 	.twocolumncart .cart-collaterals .col2-set .col-1, .twocolumncart .cart-collaterals .col2-set .col-2, .cart .cart-collaterals .col2-set .col-2 {width: 100%;}
 	.cart-table button.button{margin-bottom:5px;}
 }
+
+.KCOgiftFormContainer{margin-bottom:20px;}
+.catalog-product-view .kco-ppayment p{margin:0px;}
+.catalog-category-view .kco-ppayment p{font-size:11px;margin:0px;}
+.kco-ppayment img{display:inline;}

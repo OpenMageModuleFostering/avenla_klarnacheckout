@@ -121,8 +121,16 @@
                     Event.observe(el, 'click', function(){
                         if (el.checked == true) {
                             setShipLoading(true);
+                            <?php
+                                if (Mage::app()->getStore()->isCurrentlySecure()){
+                                    $estimateUpdateUrl = $this->getUrl("klarnaCheckout/cart/estimateUpdateAjaxPost", array("_forced_secure" => true));
+                                }
+                                else{
+                                    $estimateUpdateUrl = $this->getUrl("klarnaCheckout/cart/estimateUpdateAjaxPost");
+                                }
+                            ?>
 
-                            new Ajax.Request('<?php echo $this->getUrl("klarnaCheckout/cart/estimateUpdateAjaxPost") ?>', {
+                            new Ajax.Request('<?php echo $estimateUpdateUrl; ?>', {
                                 method:'POST',
                                 parameters: $('co-shipping-method-form').serialize(true),
                                 onSuccess: function(k) {
@@ -143,7 +151,15 @@
             
             function estimateAjaxPost(event) {
                 setShipLoading(true);
-                new Ajax.Request('<?php echo $this->getUrl("klarnaCheckout/cart/estimateAjaxPost") ?>', {
+                <?php
+                    if (Mage::app()->getStore()->isCurrentlySecure()){
+                        $estimatePostUrl = $this->getUrl("klarnaCheckout/cart/estimateAjaxPost", array("_forced_secure" => true));
+                    }
+                    else{
+                        $estimatePostUrl = $this->getUrl("klarnaCheckout/cart/estimateAjaxPost");
+                    }
+                ?>
+                new Ajax.Request('<?php echo $estimatePostUrl; ?>', {
                     method:'POST',
                     parameters: $('shipping-zip-form').serialize(true),
                     onSuccess: function(k) {

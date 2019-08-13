@@ -24,7 +24,7 @@
  * @author    Klarna <support@klarna.com>
  * @copyright 2012 Klarna AB
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache license v2.0
- * @link      http://integration.klarna.com/
+ * @link      http://developers.klarna.com/
  */
 
 /**
@@ -35,7 +35,7 @@
  * @author    David K. <david.keijser@klarna.com>
  * @copyright 2012 Klarna AB
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache license v2.0
- * @link      http://integration.klarna.com/
+ * @link      http://developers.klarna.com/
  */
 class Klarna_Checkout_UserAgent
 {
@@ -51,11 +51,10 @@ class Klarna_Checkout_UserAgent
      */
     public function __construct()
     {
-	
-		$this->_fields = array(
+        $this->_fields = array(
             'Library' => array(
                 'name' => 'Klarna.ApiWrapper',
-                'version' => '1.1.0',
+                'version' => '1.2.1',
             ),
             'OS' => array(
                 'name' => php_uname('s'),
@@ -64,10 +63,10 @@ class Klarna_Checkout_UserAgent
             'Language' => array(
                 'name' => 'PHP',
                 'version' => phpversion()
-            ),
+			),
 			'Module' => array(
                 'name' => 'KlarnaCheckout.MagentoModule',
-                'version' => '1.0.7'
+                'version' => '1.0.8'
             )
         );
     }

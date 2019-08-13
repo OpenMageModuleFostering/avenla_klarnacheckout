@@ -22,8 +22,8 @@
 <?php $helper = Mage::helper("klarnaCheckout"); ?>
 
 <a href="<?php echo $helper->getCartUri();?>" class="klarnaLink">
-  <img src="<?php echo $helper->getLogoSrc(); ?>" alt="Klarna Checkout" />
-  <p class="klarnaLinkText"><?php echo $this->__($helper->getLinkText());?></p>
+	<img src="<?php echo $helper->getLogoSrc(); ?>" alt="Klarna Checkout" />
+	<p class="klarnaLinkText"><?php echo $this->__($helper->getLinkText());?></p>
 </a>
 
 <?php echo $this->getChildHtml('original'); ?>

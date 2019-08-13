@@ -93,8 +93,6 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             $create['merchant_reference']['orderid1']   = $this->quote ? $this->quote->getId() : '12345';
             $create['gui']['options']                   = array('disable_autofocus');
 			$create['gui']['layout']					= $this->mobile ? 'mobile' : 'desktop';
-            $layout = $this->mobile ? 'mobile' : 'desktop';
-            Mage::log($layout);
             
             $info = $this->getCustomerInfo();
             
@@ -189,28 +187,46 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 	private function addProductsToCart()
 	{
         $mCart = $this->quote->getAllVisibleItems();
+        
         if(count($mCart) > 0){
             foreach ($mCart as $i){
-                $discount_rate = 0;
-                if($i->getBaseDiscountAmount()){
-                    $discount_rate = $i->getBaseDiscountAmount() / ($i->getBaseRowTotalInclTax() / 100);
-                    $this->discounted += $i->getBaseDiscountAmount();
+                if($i->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE && $i->isChildrenCalculated()){
+                    foreach($i->getChildren() as $c){
+                        $this->addProduct($c);
+                    }
                 }
-
-                $this->cart[] = array(
-                    'type'          => 'physical',
-                    'reference'     => $i->getSku(),
-                    'name'          => $i->getName(),
-                    'uri'           => $i->getUrlPath(),
-                    'quantity'      => (int)$i->getQty(),
-                    'unit_price'    => round($i->getBasePriceInclTax(), 2) * 100,
-                    'discount_rate' => round($discount_rate, 2) * 100,
-                    'tax_rate'      => round($i->getTaxPercent(), 2) * 100
-                );
+                else{
+                    $this->addProduct($i);
+                }
             }
         }
 	}
-    
+
+    /**
+     *  Add quote item to cart array
+     *  
+     *  @param Mage_Sales_Model_Quote_Item
+     */
+    private function addProduct($item)
+    {
+        $discount_rate = 0;
+        if($item->getBaseDiscountAmount()){
+            $discount_rate = $item->getBaseDiscountAmount() / ($item->getBaseRowTotalInclTax() / 100);
+            $this->discounted += $item->getBaseDiscountAmount();
+        }
+
+        $this->cart[] = array(
+            'type'          => 'physical',
+            'reference'     => $item->getSku(),
+            'name'          => $item->getName(),
+            'uri'           => $item->getUrlPath(),
+            'quantity'      => (int)$item->getTotalQty(),
+            'unit_price'    => round($item->getBasePriceInclTax(), 2) * 100,
+            'discount_rate' => round($discount_rate, 2) * 100,
+            'tax_rate'      => round($item->getTaxPercent(), 2) * 100
+        );
+    }
+
     /**
      *  Process discount from quote to Klarna Checkout order
      *  

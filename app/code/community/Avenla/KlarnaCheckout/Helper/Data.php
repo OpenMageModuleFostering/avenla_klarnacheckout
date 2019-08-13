@@ -87,7 +87,7 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
     public function getLogoSrc($width = 88)
 	{
         $eid = Mage::getSingleton('klarnaCheckout/KCO')->getConfig()->getKlarnaEid();
-		return "https://cdn.klarna.com/public/images/FI/logos/v1/basic/FI_basic_logo_std_blue-black.png?width=" . $width . "&eid=" . $eid;
+        return "https://cdn.klarna.com/1.0/shared/image/generic/logo/sv_se/basic/blue-black.png?width=". $width . "&eid=" . $eid;
 	}
     
     /**

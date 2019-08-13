@@ -171,7 +171,7 @@ class Avenla_KlarnaCheckout_Model_KCO extends Mage_Payment_Model_Method_Abstract
             if($diff > 0)
                 $total_refund = false;
 
-            if($item->getQty() > 0)
+            if($item->getQty() > 0 && !$item->getOrderItem()->isDummy())
                 $products[$item->getSku()] = $item->getQty();
         }
 

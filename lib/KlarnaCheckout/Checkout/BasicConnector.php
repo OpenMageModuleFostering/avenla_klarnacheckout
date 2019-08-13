@@ -24,7 +24,7 @@
  * @author    Klarna <support@klarna.com>
  * @copyright 2012 Klarna AB
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache license v2.0
- * @link      http://integration.klarna.com/
+ * @link      http://developers.klarna.com/
  */
 
 /**
@@ -37,7 +37,7 @@
  * @author    David K. <david.keijser@klarna.com>
  * @copyright 2012 Klarna AB
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache license v2.0
- * @link      http://integration.klarna.com/
+ * @link      http://developers.klarna.com/
  */
 class Klarna_Checkout_BasicConnector implements Klarna_Checkout_ConnectorInterface
 {
@@ -309,7 +309,6 @@ class Klarna_Checkout_BasicConnector implements Klarna_Checkout_ConnectorInterfa
 
         // Create a HTTP Request object
         $request = $this->createRequest($resource, $method, $payload, $url);
-        // $this->_setContent($request, $payload, $method);
 
         // Execute the HTTP Request
         $result = $this->http->send($request);

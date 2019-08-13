@@ -666,6 +666,7 @@ class Klarna
                 $locale['currency'] = $this->_currency;
             }
         } else {
+
             // Use the given country / language / currency
             if (!is_numeric($country)) {
                 $country = KlarnaCountry::fromCode($country);
@@ -699,7 +700,7 @@ class Klarna
                 $locale['country']
             );
         }
-
+        
         $this->_checkCountry($locale['country']);
         $this->_checkCurrency($locale['currency']);
         $this->_checkLanguage($locale['language']);
@@ -3660,7 +3661,6 @@ class Klarna
                 KlarnaFlags::CHECKOUT_PAGE . ' or ' . KlarnaFlags::PRODUCT_PAGE
             );
         }
-
         $lowest_pp = $lowest = false;
 
         foreach ($this->getPClasses() as $pclass) {

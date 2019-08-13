@@ -94,17 +94,7 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
         
         return false;
     }
-    
-    /**
-     * Get selected locale for Klarna Checkout
-     * 
-     * @return  string  locale
-     */
-    public function getLocale()
-    {
-        return $this->getConfigData('locale');
-    }
-    
+        
     /**
      * Get module status
      * 
@@ -188,5 +178,19 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
     public function getLicenseAgreement()
     {
         return $this->getConfigData('license');
+    }
+
+    /**
+     * Get allowed shipping methods
+     * 
+     * @return array
+     */
+    public function getDisallowedShippingMethods()
+    {
+        $methods = array();
+        if($this->getConfigData('disabled_shipping_methods'))
+            $methods = explode(",", $this->getConfigData('disabled_shipping_methods'));
+
+        return $methods;
     }
 }

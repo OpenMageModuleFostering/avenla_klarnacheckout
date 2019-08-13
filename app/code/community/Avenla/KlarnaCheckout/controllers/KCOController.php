@@ -35,7 +35,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
 		$result = array();
 
         $quote = Mage::getSingleton('checkout/session')->getQuote();
-        $kco = Mage::getSingleton('klarnaCheckout/KCO');
+        $kco = Mage::getModel('klarnaCheckout/KCO');
         
 		if (!$quote->validateMinimumAmount()){
 			$minimumAmount = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())
@@ -48,7 +48,7 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
 			$result['msg'] = $warning;
 		}
 		
-        if(!$kco->isAvailable($quote, $quote->getShippingAddress()->getCountry())){
+        if(!$kco->isAvailable($quote)){
             $result['msg'] = $this->__("Klarna Checkout is not available");
         }
         else{
@@ -128,11 +128,15 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         if($region_code == '')
             $region_code = 1;
 
+        $street = isset($address['street_address']) 
+        	? $address['street_address'] 
+        	: $address['street_name']  . " " . $address['street_number'];
+
         $magentoAddress = array(
             'firstname'             => $address['given_name'],
             'lastname'              => $address['family_name'],
             'email'                 => $address['email'],
-            'street'                => $address['street_address'],
+            'street'                => $street,
             'city'                  => $address['city'],
             'region_id'             => $region_code,
             'region'                => $region,
@@ -242,12 +246,9 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
      */
     private function quoteToOrder($quote, $ko)
 	{
-		// The address given to Klarna is set to both
-        // billing and shipping
-
         $quote->setCustomerEmail($ko['billing_address']['email'])->save();
 		$quote->getBillingAddress()->addData($this->convertAddress($ko['billing_address']));
-		$quote->getShippingAddress()->addData($this->convertAddress($ko['billing_address']));
+		$quote->getShippingAddress()->addData($this->convertAddress($ko['shipping_address']));
         $quote->getPayment()->setMethod(Mage::getModel("klarnaCheckout/KCO")->getCode());
         $quote->collectTotals()->save();
         $service = Mage::getModel('sales/service_quote', $quote);

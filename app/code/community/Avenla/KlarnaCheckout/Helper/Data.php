@@ -99,10 +99,11 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
      * 
      * @return  bool
      */
-    public function getConnectionStatus($country = null)
+    public function getConnectionStatus($quote = null)
     {
         try{
-            $ko = Mage::getModel("klarnaCheckout/order")->dummyOrder($country);
+            $ko = Mage::getModel("klarnaCheckout/order")->dummyOrder($quote);
+
             if($ko == null)
                 return false;
             
@@ -145,5 +146,26 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
 			$taxRate = $taxClasses["value_".$taxClass];
 
         return $taxRate;
-    } 
+    }
+
+    /**
+     * Get locale code for purchase country
+     * 
+     * @param string $country
+     * @return string
+     */
+    public function getLocale($country)
+    {
+         switch($country){
+            case 'SE':
+                return 'sv-se';
+            case 'NO':
+                return 'nb-no';
+            case 'DE':
+                return 'de-de';
+            case 'FI':
+            default:
+                return 'fi-fi';
+        }
+    }
 }

@@ -34,16 +34,14 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     
 	public function __construct()
 	{ 
-		$this->helper = Mage::helper("klarnaCheckout");
-		$this->config = Mage::getSingleton('klarnaCheckout/KCO')->getConfig();
-		
+        $this->helper = Mage::helper("klarnaCheckout");		
+        $this->config = Mage::getSingleton('klarnaCheckout/KCO')->getConfig();
 		$url = $this->config->isLive() 
 			?  Avenla_KlarnaCheckout_Model_Config::KCO_LIVE_URL 
 			:  Avenla_KlarnaCheckout_Model_Config::KCO_DEMO_URL;
 
 		parent::$baseUri  		= $url . '/checkout/orders';
 		parent::$contentType 	= "application/vnd.klarna.checkout.aggregated-order-v2+json";
-		Mage::log("SS:". $this->config->getKlarnaSharedSecret());
 		
 		$this->connector = Klarna_Checkout_Connector::create($this->config->getKlarnaSharedSecret());
 	}
@@ -57,7 +55,6 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
      */
     public function getOrder($quote = null, $checkoutId = null, $mobile = false)
     {
-		
         $this->order = new Klarna_Checkout_Order($this->connector, $checkoutId);
         $this->mobile = $mobile;
         if(!$quote)
@@ -77,15 +74,12 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
      * Create new Klarna Checkout order
      *
      */
-    private function createOrder($country = null)
+    private function createOrder()
     {   
         try{
-            $create['purchase_country'] = $country != null 
-				? $country 
-				: Mage::getStoreConfig('general/country/default', Mage::app()->getStore());
-				
-            $create['purchase_currency']                = $this->dummy ? 'EUR' : $this->quote->getBaseCurrencyCode();
-            $create['locale']                           = $this->config->getLocale();
+            $create['purchase_country']                 = $this->getPurchaseCountry();	
+            $create['purchase_currency']                = Mage::app()->getStore()->getBaseCurrencyCode();
+            $create['locale']                           = $this->helper->getLocale($this->getPurchaseCountry());
             $create['merchant']['id']                   = $this->config->getKlarnaEid();
             $create['merchant']['terms_uri']            = $this->config->getTermsUri();
             $create['merchant']['checkout_uri']         = $this->helper->getCheckoutUri();
@@ -121,23 +115,24 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     {
         try {
 			$this->order->fetch();
-			
-			if(!$this->helper->isOrderFromCurrentStore($this->order)){
+			if(!$this->helper->isOrderFromCurrentStore($this->order) ||
+                strtoupper($this->order['purchase_country']) != $this->getPurchaseCountry()){
+    
                 $this->createOrder();
                 return;
             }
-			
+     
 			$update['cart']['items'] = array();
             $update['merchant_reference']['orderid1'] = $this->quote->getId();
             
             $info = $this->getCustomerInfo();
             if(!empty($info))
                 $update['shipping_address'] = $info;
-                 
+            
             foreach ($this->cart as $item){
 				$update['cart']['items'][] = $item;
 			}
-			
+
 			$this->order->update($update);
 		}
         catch (Exception $e) {
@@ -147,6 +142,21 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 		}
     }
     
+    /**
+     * Get purchase country
+     * 
+     * @return  string
+     */
+    private function getPurchaseCountry()
+    {
+        if($this->quote && $this->quote->getShippingAddress()->getCountry()){
+            return $this->quote->getShippingAddress()->getCountry();               
+        }
+        else{
+            return Mage::getStoreConfig('general/country/default', Mage::app()->getStore());
+        }
+    }
+
     /**
      * Get customer info for Klarna Checkout
      * 
@@ -195,9 +205,6 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     {
         $totals = $this->quote->getTotals();
 		
-		// TODO : Calculate discount tax rate ! Cannot be 0 always.
-		// Check discount tax configuration too.
-		
         if(isset($totals['discount'])){
             $discount = $totals['discount'];
             $this->cart[] = array(
@@ -244,20 +251,23 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
      * 
      * @return  Klarna_Checkout_Order
      */
-    public function dummyOrder($country = null)
+    public function dummyOrder($quote = null)
     {
         $this->dummy = true;
+        if($quote)
+            $this->quote = $quote;
+
         $this->order = new Klarna_Checkout_Order($this->connector, null);
-        
+
         $this->cart = array(
             array(
                 'reference' => '123456789',
                 'name' => 'Test product',
                 'quantity' => 1,
                 'unit_price' => 4490,
-                'tax_rate' => 2400
+                'tax_rate' => 0
             ));
-        $this->createOrder($country);
+        $this->createOrder();
         
         return $this->order;
     }

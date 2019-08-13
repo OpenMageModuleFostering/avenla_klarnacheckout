@@ -53,18 +53,16 @@ class Avenla_KlarnaCheckout_Model_KCO extends Mage_Payment_Model_Method_Abstract
      * @param   Mage_Sales_Model_Quote|null $quote
      * @return  bool
      */
-    public function isAvailable($quote = null, $country = null)
-    {
-        $connectionStatus = Mage::helper('klarnaCheckout')->getConnectionStatus($country);
-        
+    public function isAvailable($quote = null)
+    { 
         if($quote == null)
             $quote = Mage::getSingleton('checkout/session')->getQuote();
-        
-        // If KCO is needed to be disabled with some shipping methods
-        // $preventMethods = array('itellaSmartpost_itellaSmartpost');
-        // if (in_array($quote->getShippingAddress()->getShippingMethod() , $preventMethods))  
-            // return false;
 
+        $connectionStatus = Mage::helper('klarnaCheckout')->getConnectionStatus($quote);
+        
+        if(in_array($quote->getShippingAddress()->getShippingMethod(), $this->getConfig()->getDisallowedShippingMethods()))
+            return false;
+        
 		return parent::isAvailable($quote) && 
                $connectionStatus && 
                (Mage::getSingleton('customer/session')->isLoggedIn() || Mage::helper('checkout')->isAllowedGuestCheckout($quote)) && 

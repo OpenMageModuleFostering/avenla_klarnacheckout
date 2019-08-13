@@ -284,16 +284,16 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
     public function activateFromInvoice($mo, $invoice)
     {
         if($rno = $this->helper->getReservationNumber($mo)){
+            
             if (abs($mo->getTotalDue() - $invoice->getGrandTotal()) > .0001){
                 foreach($invoice->getAllItems() as $item){
                     if(!$item->getOrderItem()->isDummy()){
                         $this->klarna->addArtNo($item->getQty(), $item->getSku());
                     }
                 }
-            }
-
-            if($invoice->getShippingAmount() > 0){
-                $this->klarna->addArtNo(1, 'shipping_fee');
+                if($invoice->getShippingAmount() > 0){
+                    $this->klarna->addArtNo(1, 'shipping_fee');
+                }
             }
 
             try{

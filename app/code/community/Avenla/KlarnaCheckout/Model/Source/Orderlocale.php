@@ -39,6 +39,10 @@ class Avenla_KlarnaCheckout_Model_Source_Orderlocale
             array(
                 'label' => Mage::app()->getLocale()->getCountryTranslation('DE'),
                 'value' => 'de-de'
+            ),
+            array(
+                'label' => Mage::app()->getLocale()->getCountryTranslation('AT'),
+                'value' => 'de-at'
             )
         );        
     }

@@ -39,6 +39,10 @@ class Avenla_KlarnaCheckout_Model_Source_Countries
             array(
                 'label' => Mage::helper('core')->__('Germany'),
                 'value' => 'DE'
+            ),
+            array(
+                'label' => Mage::helper('core')->__('Austria'),
+                'value' => 'AT'
             )
         );
     }

@@ -196,6 +196,8 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
                 return 'nb-no';
             case 'DE':
                 return 'de-de';
+            case 'AT':
+                return 'de-at';
             case 'FI':
             default:
                 return 'fi-fi';

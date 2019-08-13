@@ -154,18 +154,20 @@
 			<div class="col-1">
 				<div class="payments">
 					<?php if(!$this->hasError()): ?>
-					<div class="paymentMenuContainer">
-						<ul>
-							<li class="active"><a href="#"><?php echo Mage::getSingleton('klarnaCheckout/config')->getTitle(); ?></a></li>
-							<?php foreach ($this->getMethods('methods') as $method): ?>
-								<?php if ($methodHtml = $this->getMethodHtml($method)): ?>
-								<?php if(strlen(preg_replace( "/\r|\n/", "", $methodHtml)) > 0): ?>	
-									<li><?php echo $methodHtml; ?></li>
-									<?php endif; ?>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</ul>
-                    </div>
+                        <?php if(!Mage::getModel('klarnaCheckout/config')->hideDefaultCheckout()): ?>
+        					<div class="paymentMenuContainer">
+        						<ul>
+        							<li class="active"><a href="#"><?php echo Mage::getSingleton('klarnaCheckout/config')->getTitle(); ?></a></li>
+        							<?php foreach ($this->getMethods('methods') as $method): ?>
+        								<?php if ($methodHtml = $this->getMethodHtml($method)): ?>
+        								<?php if(strlen(preg_replace( "/\r|\n/", "", $methodHtml)) > 0): ?>	
+        									<li><?php echo $methodHtml; ?></li>
+        									<?php endif; ?>
+        								<?php endif; ?>
+        							<?php endforeach; ?>
+        						</ul>
+                            </div>
+                        <?php endif; ?>
 					<div class="payment_container">
 						<?php echo $this->getChildHtml('klarnacheckout'); ?>
 					</div>

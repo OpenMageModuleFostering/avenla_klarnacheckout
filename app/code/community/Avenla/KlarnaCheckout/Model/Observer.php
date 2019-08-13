@@ -152,4 +152,17 @@ class Avenla_KlarnaCheckout_Model_Observer
             }
         }
     }
+
+    /**
+     * Add new layout handle if needed
+     * 
+     * @param Varien_Event_Observer $observer
+     */
+    public function layoutLoadBefore($observer)
+    {
+         if (Mage::getModel('klarnaCheckout/config')->hideDefaultCheckout()){
+            $observer->getEvent()->getLayout()->getUpdate()
+                ->addHandle('kco_only');
+        }
+    }
 }

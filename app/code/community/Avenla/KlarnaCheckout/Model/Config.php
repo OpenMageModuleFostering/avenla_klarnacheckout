@@ -193,4 +193,34 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
 
         return $methods;
     }
+
+    /**
+     * Check if Part payment is enabled
+     * 
+     * @return bool
+     */
+    public function isPpwidgetActive()
+    {
+        return $this->getConfigData('pp_widget');
+    }
+
+    /**
+     * Get part payment widget layout
+     * 
+     * @return string
+     */
+    public function getPpWidgetLayout()
+    {
+        return $this->getConfigData('pp_layout');
+    }
+
+    /**
+     * Get config for default Checkout
+     * 
+     * @return bool
+     */
+    public function hideDefaultCheckout()
+    {
+        return $this->getConfigData('default_checkout');
+    }
 }

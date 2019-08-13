@@ -36,7 +36,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 	{ 
         $this->helper = Mage::helper("klarnaCheckout");		
         $this->config = Mage::getSingleton('klarnaCheckout/KCO')->getConfig();
-		$url = $this->config->isLive() 
+		$url = $this->config->isLive()
 			?  Avenla_KlarnaCheckout_Model_Config::KCO_LIVE_URL 
 			:  Avenla_KlarnaCheckout_Model_Config::KCO_DEMO_URL;
 
@@ -83,13 +83,18 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             $create['merchant']['id']                   = $this->config->getKlarnaEid();
             $create['merchant']['terms_uri']            = $this->config->getTermsUri();
             $create['merchant']['checkout_uri']         = $this->helper->getCheckoutUri();
-            $create['merchant']['confirmation_uri']     = $this->helper->getConfirmationUri(); 
+            $create['merchant']['confirmation_uri']     = $this->helper->getConfirmationUri();
             $create['merchant']['push_uri']             = $this->helper->getPushUri();
+
+            if($this->helper->getValidationUri())
+                $create['merchant']['validation_uri']   = $this->helper->getValidationUri();
+
             $create['merchant_reference']['orderid1']   = $this->quote ? $this->quote->getId() : '12345';
             $create['gui']['options']                   = array('disable_autofocus');
 			$create['gui']['layout']					= $this->mobile ? 'mobile' : 'desktop';
             
             $info = $this->getCustomerInfo();
+            
             if(!empty($info))
                 $create['shipping_address'] = $info;
             
@@ -117,7 +122,6 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 			$this->order->fetch();
 			if(!$this->helper->isOrderFromCurrentStore($this->order) ||
                 strtoupper($this->order['purchase_country']) != $this->getPurchaseCountry()){
-    
                 $this->createOrder();
                 return;
             }
@@ -189,7 +193,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 					'name' 			=> $i->getName(),
 					'uri' 			=> $i->getUrlPath(),
 					'quantity' 		=> (int)$i->getQty(),
-					'unit_price' 	=> round($i->getPriceInclTax(), 2) * 100,
+					'unit_price' 	=> round($i->getBasePriceInclTax(), 2) * 100,
 					'discount_rate' => round($i->getDiscountPercent(), 2) * 100,
 					'tax_rate' 		=> round($i->getTaxPercent(), 2) * 100
 				);
@@ -204,15 +208,17 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
     private function processDiscount()
     {
         $totals = $this->quote->getTotals();
-		
-        if(isset($totals['discount'])){
+        $baseDiscount = $this->quote->getShippingAddress()->getBaseDiscountAmount();
+        
+        if($baseDiscount < 0){
             $discount = $totals['discount'];
+            
             $this->cart[] = array(
 				'type' 			=> 'discount',
 				'reference' 	=> $discount->getcode(),
 				'name' 			=> $discount->getTitle(),
 				'quantity' 		=> 1,
-				'unit_price' 	=> round($discount->getValue(), 2) * 100,
+				'unit_price' 	=> round($baseDiscount, 2) * 100,
 				'tax_rate' 		=> 0
 			);
         }
@@ -238,7 +244,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 				'reference' 	=> 'shipping_fee',
 				'name' 			=> $this->quote->getShippingAddress()->getShippingDescription(),
 				'quantity' 		=> 1,
-				'unit_price' 	=> round($this->quote->getShippingAddress()->getShippingInclTax(), 2) * 100,
+				'unit_price' 	=> round($this->quote->getShippingAddress()->getBaseShippingInclTax(), 2) * 100,
 				'tax_rate'      => (int)($taxRate * 100)
 			);
             
@@ -261,11 +267,11 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 
         $this->cart = array(
             array(
-                'reference' => '123456789',
-                'name' => 'Test product',
-                'quantity' => 1,
-                'unit_price' => 4490,
-                'tax_rate' => 0
+                'reference'     => '123456789',
+                'name'          => 'Test product',
+                'quantity'      => 1,
+                'unit_price'    => 4490,
+                'tax_rate'      => 0
             ));
         $this->createOrder();
         

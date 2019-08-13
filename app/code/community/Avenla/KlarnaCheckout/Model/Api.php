@@ -86,7 +86,7 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
         $qtys = array();
         $partial = false;
         
-        foreach ($mo->getAllItems() as $item)
+        foreach ($mo->getAllVisibleItems() as $item)
         {
             if($item->getQtyShipped() > $item->getQtyInvoiced()){
                 $qtys[$item->getId()] = $item->getQtyShipped() - $item->getQtyInvoiced();

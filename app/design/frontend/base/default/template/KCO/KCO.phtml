@@ -30,7 +30,7 @@
 <script>
     function loadFrame()
     {
-		var kcoloadurl = '<?php echo $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/") ?>';
+		var kcoloadurl = '<?php echo $this->getUrl("klarnaCheckout/KCO/loadKcoFrame/", array("_secure" => true)) ?>';
 		
 		if($$('div.payments')[0]){
 			if($$('div.payments')[0].getWidth() < 750)
@@ -45,6 +45,7 @@
                     $('klarnaMsg').update('<h2>'+ response.msg +'</h2>').show();
                 }
                 else{
+                    $('klarnaMsg').update('').hide();
                     $('klarnaOverlay').hide();
                 }
 

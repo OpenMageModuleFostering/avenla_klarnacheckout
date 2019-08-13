@@ -43,3 +43,8 @@
 "License agreement", "Sopimusehdot"
 "By accepting the license agreement and filling in your contact information you can use Klarna Checkout module for free.", "Hyväksymällä sopimusehdot ja täyttämällä yhteystietosi voit käyttää Klarna Checkout moduulia ilmaiseksi."
 "Disabled shipping methods", "Poissuljetut toimitustavat"
+"Show part payment widget on product page", "Näytä osamaksu tiedot tuotesivulla"
+"Part payment widget layout", "Osamaksu tietojen ulkoasu"
+"Please use the same post code for your quote and Klarna.", "Toimitustavan valinnassa tulee käyttää samaa postinumeroa kuin Klarnan tilaajan tiedoissa."
+"Hide links to default Checkout", "Piilota linkit kassasivulle"
+"Text shown in Klarna link at Magento Checkout", "Kassan linkissä näytettävä teksti"

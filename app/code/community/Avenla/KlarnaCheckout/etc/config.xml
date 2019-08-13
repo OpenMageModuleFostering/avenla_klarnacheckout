@@ -21,12 +21,12 @@
 
 -->
 <config>
-	<modules>
-		<Avenla_KlarnaCheckout>
-			<version>1.0.4</version>
-		</Avenla_KlarnaCheckout>
-	</modules>
-	<global>
+    <modules>
+        <Avenla_KlarnaCheckout>
+            <version>1.0.5</version>
+        </Avenla_KlarnaCheckout>
+    </modules>
+    <global>
 		<blocks>
 			<klarnaCheckout>
 				<class>Avenla_KlarnaCheckout_Block</class>
@@ -76,7 +76,6 @@
 			</sales_order_invoice_save_after>
 		</events>
 	</global>
-    
 	<default>
 		<payment>
 			<klarnaCheckout_payment>
@@ -85,11 +84,9 @@
 				<payment_action>authorize</payment_action>
 				<active>1</active>
 				<title>Klarna Checkout</title>
-				<allowspecific>1</allowspecific>
 			</klarnaCheckout_payment>
 		</payment>
 	</default>
-    
 	<frontend>
 		<translate>
 			<modules>
@@ -133,6 +130,14 @@
 					</avenla_klarnacheckout_observer>
 				</observers>
 			</core_block_abstract_to_html_before>
+			<controller_action_layout_load_before>
+        		<observers>
+          			<avenla_klarnacheckout_layout_load_before>
+			            <class>klarnaCheckout/observer</class>
+            			<method>layoutLoadBefore</method>
+          			</avenla_klarnacheckout_layout_load_before>
+    			</observers>
+      		</controller_action_layout_load_before>
 		</events>
 	</frontend>
 	

@@ -41,6 +41,22 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
 		$storeId = Mage::app()->getStore()->getStoreId();
         return rtrim(Mage::getUrl('klarnaCheckout/KCO/push?storeid='.$storeId.'&klarna_order={checkout.order.uri}'), "/");
     }
+
+    /**
+     * Get validation url
+     * 
+     * @return  string | false
+     */
+    public function getValidationUri()
+    {
+        $uri = rtrim(Mage::getUrl('klarnaCheckout/KCO/validation?sid='.Mage::getSingleton('core/session')
+            ->getSessionId(), array('_forced_secure' => true)), "/");
+        
+        if(parse_url($uri, PHP_URL_SCHEME) == "https")
+            return $uri;
+        
+        return false;
+    }
     
     /**
      * Get url of checkout page
@@ -134,6 +150,7 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
 
 	/**
      * Get order shipping tax rate
+     * 
      * @return float $taxRate
      */
     public function getShippingVatRate()

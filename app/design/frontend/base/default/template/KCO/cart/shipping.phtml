@@ -20,7 +20,7 @@
  */
  ?>
 <?php /** @var $this Mage_Checkout_Block_Cart_Shipping */ ?>
-<div class="shipping col2-set">
+<div class="shipping col2-set" id="shipping">
 	
     <h2><?php echo $this->__('Estimate Shipping and Tax') ?></h2>
     <div class="shipping-form">
@@ -111,7 +111,72 @@
         </form>
 		</div>
         <?php endif; ?>
+
         <script type="text/javascript">
+        
+            function addObservers(){
+                $$('input[name="estimate_postcode"]')[0].observe('change', this.estimateAjaxPost.bind(this));
+
+                $$('input[type="radio"][name="estimate_method"]').each(function(el){
+                    Event.observe(el, 'click', function(){
+                        if (el.checked == true) {
+                            setShipLoading(true);
+
+                            new Ajax.Request('<?php echo $this->getUrl("klarnaCheckout/cart/estimateUpdateAjaxPost") ?>', {
+                                method:'POST',
+                                parameters: $('co-shipping-method-form').serialize(true),
+                                onSuccess: function(k) {
+                                    var response = eval("(" + k.responseText + ")");
+                                    $('shipping').replace(response.shipping);
+                                    $('shopping-cart-totals-table').replace(response.totals);
+                                    addObservers();
+                                },
+                                onComplete:function(k){
+                                    setShipLoading(false);
+                                }
+                            });
+                        }
+                   });
+                });
+                coShippingMethodForm = new VarienForm('shipping-zip-form');
+            }
+            
+            function estimateAjaxPost(event) {
+                setShipLoading(true);
+                new Ajax.Request('<?php echo $this->getUrl("klarnaCheckout/cart/estimateAjaxPost") ?>', {
+                    method:'POST',
+                    parameters: $('shipping-zip-form').serialize(true),
+                    onSuccess: function(k) {
+                        var response = eval("(" + k.responseText + ")");
+                        $('shipping').replace(response.shipping);
+                        $('shopping-cart-totals-table').replace(response.totals);
+                        addObservers();
+                    },
+                    onComplete:function(k){
+                        setShipLoading(false);
+                    }
+                });       
+            }
+            
+            function setShipLoading(status){
+                if(status){
+                    if(window._klarnaCheckout !== undefined){
+                        window._klarnaCheckout(function (api) {
+                            api.suspend();
+                        });
+                    }    
+                    $('shipping').addClassName('loading');
+                    $('shopping-cart-totals-table').addClassName('loading');
+                }
+                else{
+                    loadFrame();
+                }
+            }
+        
+            document.observe("dom:loaded", function() {
+                addObservers();
+            });
+        
         //<![CDATA[
             var coShippingMethodForm = new VarienForm('shipping-zip-form');
             var countriesWithOptionalZip = <?php echo $this->helper('directory')->getCountriesWithOptionalZip(true) ?>;

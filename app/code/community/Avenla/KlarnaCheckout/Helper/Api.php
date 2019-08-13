@@ -83,7 +83,7 @@ class Avenla_KlarnaCheckout_Helper_Api extends Mage_Core_Helper_Abstract
     {
         $mo->addStatusHistoryComment(
             $this->__('Failed to activate reservation %s', $rno) ."(" . $e->getMessage() . ")"
-            );
+        );
         $mo->save();
         Mage::unregister('kco_save');
         Mage::logException($e);

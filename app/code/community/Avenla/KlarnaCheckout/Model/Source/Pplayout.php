@@ -18,11 +18,28 @@
  * @category   Avenla
  * @package    Avenla_KlarnaCheckout
  */
-?>
+ 
+class Avenla_KlarnaCheckout_Model_Source_Pplayout
+{
+    public function toOptionArray()
+    {
+    	$options = array();
 
-<?php if ($this->isPossibleOnepageCheckout()):?>
-	<a href="<?php echo $this->getCheckoutUrl() ?>"
-		<?php if ($this->isDisabled()): ?> class="disabled"<?php endif; ?>>
-		<?php echo $this->__('Proceed to Checkout') ?>
-	</a>
-<?php endif?>
+    	$layouts  = array(
+    		'Pale',
+    		'Dark',
+    		'Deep',
+    		'Deep-extra'
+    		);
+
+		foreach($layouts as $layout){
+			$options[] = array(
+				'label' => $layout,
+				'value' => strtolower($layout)
+			);
+		}
+		
+		return $options;
+    }
+
+}

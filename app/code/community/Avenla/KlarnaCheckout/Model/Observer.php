@@ -43,33 +43,34 @@ class Avenla_KlarnaCheckout_Model_Observer
         
         $order = $observer->getEvent()->getOrder();
         $rno = $this->apiHelper->getReservationNumber($order);
+        
+        if($rno === false)
+            return $this;
+
 		Mage::app()->setCurrentStore($order->getStore()->getStoreId());
 		$this->api = Mage::getModel('klarnaCheckout/api');
         
         switch ($order->getState()) {
             case Mage_Sales_Model_Order::STATE_COMPLETE:
-                if($rno !== false && $order->canInvoice())
+                if($order->canInvoice())
                     $this->api->activateReservation($order);
                 
                 break;
             
             case Mage_Sales_Model_Order::STATE_CANCELED:
-                if($rno !== false)
-                    $this->api->cancelReservation($rno, $order);
+                $this->api->cancelReservation($rno, $order);
 
                 break;
             
             default:
-                if($rno !== false){
-                    $mixed = false;
-                    foreach($order->getAllItems() as $item){
-                        if($item->getQtyShipped() > $item->getQtyInvoiced())
-                            $mixed = true;
-                    }
-                    
-                    if($mixed)
-                        $this->api->activateReservation($order);
+                $mixed = false;
+                foreach($order->getAllItems() as $item){
+                    if($item->getQtyShipped() > $item->getQtyInvoiced())
+                        $mixed = true;
                 }
+                
+                if($mixed)
+                    $this->api->activateReservation($order);
         }            
 	}
 

@@ -58,15 +58,18 @@ class Avenla_KlarnaCheckout_Model_KCO extends Mage_Payment_Model_Method_Abstract
         if($quote == null)
             $quote = Mage::getSingleton('checkout/session')->getQuote();
 
-        $connectionStatus = Mage::helper('klarnaCheckout')->getConnectionStatus($quote);
-        
         if(in_array($quote->getShippingAddress()->getShippingMethod(), $this->getConfig()->getDisallowedShippingMethods()))
             return false;
 
-		return parent::isAvailable($quote) && 
-               $connectionStatus && 
+        $result = parent::isAvailable($quote) && 
                (Mage::getSingleton('customer/session')->isLoggedIn() || Mage::helper('checkout')->isAllowedGuestCheckout($quote)) && 
                count($quote->getAllVisibleItems()) >= 1 && $this->getConfig()->getLicenseAgreement();
+
+        if($result)
+            $result = Mage::helper('klarnaCheckout')->getConnectionStatus($quote);
+        
+
+        return $result;
     }
     
     /**

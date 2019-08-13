@@ -266,4 +266,84 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
     {
         return $this->getConfigData('show_giftmessage');
     }
+
+    /**
+     *  Debug logging
+     *
+     *  @return bool
+     */
+    public function debuglog()
+    {
+        return $this->getConfigData('debug_log');
+    }
+
+    /**
+     *  Use custom colors in KCO
+     *
+     *  @return bool
+     */
+    public function useCustomColors()
+    {
+        return $this->getConfigData('custom_colors');
+    }
+
+    /**
+     *  Get button color
+     *
+     *  @return string
+     */
+    public function getButtonColor()
+    {
+        return $this->getConfigData('color_button');
+    }
+
+    /**
+     *  Get button text color
+     *
+     *  @return string
+     */
+    public function getButtonTextColor()
+    {
+        return $this->getConfigData('color_button_text');
+    }
+
+    /**
+     *  Get checkbox color
+     *
+     *  @return string
+     */
+    public function getCheckboxColor()
+    {
+        return $this->getConfigData('color_checkbox');
+    }
+
+    /**
+     *  Get checkbox checkmark color
+     *
+     *  @return string
+     */
+    public function getCheckboxCheckmarkColor()
+    {
+        return $this->getConfigData('color_checkbox_checkmark');
+    }
+
+    /**
+     *  Get header color
+     *
+     *  @return string
+     */
+    public function getHeaderColor()
+    {
+        return $this->getConfigData('color_header');
+    }
+
+    /**
+     *  Get link color
+     *
+     *  @return string
+     */
+    public function getLinkColor()
+    {
+        return $this->getConfigData('color_link');
+    }
 }

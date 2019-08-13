@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Avenla_KlarnaCheckout>
-            <version>1.1.2</version>
+            <version>1.1.3</version>
         </Avenla_KlarnaCheckout>
     </modules>
     <global>
@@ -103,6 +103,14 @@
 				<payment_action>authorize</payment_action>
 				<active>1</active>
 				<title>Klarna Checkout</title>
+				<debug_log>0</debug_log>
+				<custom_colors>0</custom_colors>
+				<color_button>0089CF</color_button>
+				<color_button_text>FFFFFF</color_button_text>
+				<color_checkbox>0089CF</color_checkbox>
+				<color_checkbox_checkmark>FFFFFF</color_checkbox_checkmark>
+				<color_header>434343</color_header>
+				<color_link>0089CF</color_link>
 			</klarnaCheckout_payment>
 		</payment>
 	</default>
@@ -160,6 +168,13 @@
 		</events>
 	</frontend>
 	<adminhtml>
+		<layout>
+			<updates>
+				<klarnaCheckout>
+					<file>KCO.xml</file>
+				</klarnaCheckout>
+			</updates>
+		</layout>
 		<translate>
 			<modules>
 				<translations>

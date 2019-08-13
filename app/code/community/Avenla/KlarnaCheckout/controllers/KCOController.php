@@ -250,6 +250,9 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
         if ($ko['status'] == "checkout_complete" && $quoteID){
             $quote = Mage::getModel("sales/quote")->load($quoteID);
 
+            Mage::helper('klarnaCheckout')->log('QUOTE ID: ' . $quoteID);
+            Mage::helper('klarnaCheckout')->log($ko['cart']);
+
             if(count($quote->getAllItems()) < 1){
                 Mage::log("No valid quote found for Klarna order, reservation canceled.");
                 Mage::getModel('klarnaCheckout/api')->cancelReservation($ko['reservation']);

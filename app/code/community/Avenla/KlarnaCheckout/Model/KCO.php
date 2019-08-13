@@ -67,7 +67,6 @@ class Avenla_KlarnaCheckout_Model_KCO extends Mage_Payment_Model_Method_Abstract
 
         if($result)
             $result = Mage::helper('klarnaCheckout')->getConnectionStatus($quote);
-        
 
         return $result;
     }

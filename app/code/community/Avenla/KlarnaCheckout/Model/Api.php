@@ -158,6 +158,7 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
 
         foreach($qtys as $key => $qty){
             $sku = Mage::getModel('sales/order_item')->load($key)->getSku();
+            $sku = iconv('UTF-8', 'ISO-8859-1', $sku);
             $this->klarna->addArtNo($qty, $sku);
         }
 

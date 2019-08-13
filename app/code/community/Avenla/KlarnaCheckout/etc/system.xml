@@ -80,6 +80,15 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</sharedsecret>
+						<debug_log translate="label">
+							<label>Debug log</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</debug_log>
 						<activate_partial translate="label">
 							<label>Activate partial shipments</label>
 							<comment><![CDATA[When selected, partial shipments will be automatically activated in Klarna]]></comment>
@@ -218,6 +227,75 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </update_pclass>
+                        <custom_colors translate="label">
+							<label>Use custom colors</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>23</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</custom_colors>
+					    <color_button translate="label">
+                            <label>Button color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>24</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_button>
+                        <color_button_text translate="label">
+                            <label>Button text color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_button_text>
+                        <color_checkbox translate="label">
+                            <label>Checkbox color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>26</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_checkbox>
+                        <color_checkbox_checkmark translate="label">
+                            <label>Checkbox checkmark color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>27</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_checkbox_checkmark>
+                        <color_header translate="label">
+                            <label>Header color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>28</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_header>
+                        <color_link translate="label">
+                            <label>Link color</label>
+                            <frontend_type>text</frontend_type>
+                        	<validate>color</validate>
+                            <sort_order>29</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><custom_colors>1</custom_colors></depends>
+                        </color_link>
 					</fields>
 				</klarnaCheckout_payment>
 			</groups>

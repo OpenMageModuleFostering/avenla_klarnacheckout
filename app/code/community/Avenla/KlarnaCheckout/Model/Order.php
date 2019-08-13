@@ -61,10 +61,10 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
         if(!$quote)
             return $this->order;
         
-        $this->quote = $quote; 
+        $this->quote = $quote;
         $this->addProductsToCart();
-        $this->processDiscount();
         $this->getShippingCosts();
+        $this->processDiscount();
         
         $checkoutId ? $this->updateOrder() : $this->createOrder();
         
@@ -93,7 +93,16 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             $create['merchant_reference']['orderid1']   = $this->quote ? $this->quote->getId() : '12345';
             $create['gui']['options']                   = array('disable_autofocus');
 			$create['gui']['layout']					= $this->mobile ? 'mobile' : 'desktop';
-            
+
+            if($this->config->useCustomColors()){
+                $create['options']['color_button']              = '#'.$this->config->getButtonColor();
+                $create['options']['color_button_text']         = '#'.$this->config->getButtonTextColor();
+                $create['options']['color_checkbox']            = '#'.$this->config->getCheckboxColor();
+                $create['options']['color_checkbox_checkmark']  = '#'.$this->config->getCheckboxCheckmarkColor();
+                $create['options']['color_header']              = '#'.$this->config->getHeaderColor();
+                $create['options']['color_link']                = '#'.$this->config->getLinkColor();
+            }
+
             $info = $this->getCustomerInfo();
             
             if(!empty($info))
@@ -102,7 +111,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             foreach ($this->cart as $item){
                 $create['cart']['items'][] = $item;
             }
-            
+
             $this->order->create($create);
             if(!$this->dummy)
                 $this->order->fetch();
@@ -239,13 +248,14 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 
         if(abs($baseDiscount) - $this->discounted > 0.001){
             $discount = $totals['discount'];
-            
+            $diff = abs($baseDiscount) - $this->discounted;
+
             $this->cart[] = array(
                 'type'          => 'discount',
                 'reference'     => $discount->getcode(),
                 'name'          => $discount->getTitle(),
                 'quantity'      => 1,
-                'unit_price'    => round($baseDiscount, 2) * 100,
+                'unit_price'    => round($diff, 2) * 100,
                 'tax_rate'      => 0
             );
         }
@@ -266,12 +276,21 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
             if(isset($taxClasses["value_".$taxClass]))
 				$taxRate = $taxClasses["value_".$taxClass];
 
+            $shippingAddress = $this->quote->getShippingAddress();
+            $discount_rate = 0;
+
+            if($shippingAddress->getBaseShippingDiscountAmount()){
+                $discount_rate = $shippingAddress->getBaseShippingDiscountAmount() / ($shippingAddress->getBaseShippingInclTax() / 100);
+                $this->discounted += $shippingAddress->getBaseShippingDiscountAmount();
+            }
+
 			$shippingCosts = array(
 				'type' 			=> 'shipping_fee',
 				'reference' 	=> 'shipping_fee',
-				'name' 			=> $this->quote->getShippingAddress()->getShippingDescription(),
+				'name' 			=> $shippingAddress->getShippingDescription(),
 				'quantity' 		=> 1,
-				'unit_price' 	=> round($this->quote->getShippingAddress()->getBaseShippingInclTax(), 2) * 100,
+				'unit_price' 	=> round($shippingAddress->getBaseShippingInclTax(), 2) * 100,
+                'discount_rate' => round($discount_rate, 2) * 100,
 				'tax_rate'      => (int)($taxRate * 100)
 			);
             

@@ -22,6 +22,22 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
 {
 
     /**
+     * Write in KCO log if debugging is enabled
+     * 
+     * @param mixed  $message
+     * @param integer $level
+     */
+    public function log($message, $level = 7)
+    {
+
+        if(!Mage::getSingleton('klarnaCheckout/KCO')->getConfig()->debuglog())
+            return;
+
+        $file = 'KCO.log';
+        Mage::log($message, $level, $file);
+    }
+
+    /**
      * Get confirmation url
      * 
      * @return  string

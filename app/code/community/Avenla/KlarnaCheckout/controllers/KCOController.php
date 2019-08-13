@@ -35,6 +35,9 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
 
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $kco = Mage::getModel('klarnaCheckout/KCO');
+
+        $validationMessage = $quote->getPayment()->getAdditionalInformation("kco_validation_message");
+        $quote->getPayment()->setAdditionalInformation("kco_validation_message", null);
         
         if (!$quote->validateMinimumAmount()){
             $minimumAmount = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())
@@ -81,6 +84,10 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
                     if ($quote->getShippingAddress()->getShippingMethod() == null)
                         $result['msg'] = $this->__("Please select shipping method to use Klarna Checkout");
                 }
+
+                if($validationMessage)
+                    $result['validationMsg'] = $validationMessage;
+
                 $result['klarnaframe'] = $ko['gui']['snippet'];          
             }
         }
@@ -128,21 +135,14 @@ class Avenla_KlarnaCheckout_KCOController extends Mage_Core_Controller_Front_Act
     public function validationAction()
     {   
         $validator = Mage::getModel('klarnaCheckout/validator');
-
         $ko = $validator->parseValidationPost();
         $quote = Mage::getModel("sales/quote")->load($ko->merchant_reference->orderid1);
         
-        if($validator->validateQuote($quote, $ko)){
-            header("HTTP/1.1 200 OK");
+        if(!$validator->validateQuote($quote, $ko)){
+            $this->getResponse()
+                ->setHttpResponseCode(303)
+                ->setHeader('Location', Mage::getUrl('checkout/cart'));            
         }
-        else{
-            Mage::getSingleton('core/session')->setSessionId($_GET['sid']);
-            header("HTTP/1.0 303 See Other");
-            Mage::app()->getFrontController()->getResponse()->setRedirect(
-                Mage::helper('checkout/url')->getCartUrl()
-            )->sendResponse();
-        }
-        exit();
     }
 
     /**

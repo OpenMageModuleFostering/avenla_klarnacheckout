@@ -60,11 +60,15 @@
                 else{
                     $('klarnaMsg').update('').hide();
                     $('klarnaOverlay').hide();
+
+                    if(response.validationMsg){
+                        $('klarnaMsg').update('<h2 class="kco-validation-message">'+ response.validationMsg +'</h2>').show();
+                    }
                 }
 
                 if(response.klarnaframe){
                     $('klarnaFrame').update(response.klarnaframe);
-                    waitForKlarna();
+                    //waitForKlarna();
                 }
             }
         });

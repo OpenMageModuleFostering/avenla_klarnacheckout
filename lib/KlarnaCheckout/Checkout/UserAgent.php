@@ -66,7 +66,7 @@ class Klarna_Checkout_UserAgent
 			),
 			'Module' => array(
                 'name' => 'KlarnaCheckout.MagentoModule',
-                'version' => '1.1.5'
+                'version' => '1.1.6'
             )
         );
     }

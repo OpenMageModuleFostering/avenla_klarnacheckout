@@ -1,6 +1,7 @@
 ﻿#klarnaWrapper {position: relative;} 
 #klarnaOverlay{background-color:#FFF;position:absolute;height:100%;width:100%;opacity:0.5;}
 #klarnaMsg h2{color:#1e7ec8;font-weight:bold;margin:0px;}
+#klarnaMsg h2.kco-validation-message{color:#fd7070;}
 #kcoNewsLetterForm {display:block;margin: 10px 0px;}
 .klarnaLink{margin-bottom:10px;}
 .klarnaLink img{margin:0 auto;}

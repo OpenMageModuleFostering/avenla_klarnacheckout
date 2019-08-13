@@ -52,7 +52,7 @@ class Avenla_KlarnaCheckout_Model_Validator extends Mage_Core_Model_Abstract
     {
         if(!isset($ko->shipping_address->phone) || !isset($ko->billing_address->phone)){
             $msg = Mage::helper('klarnaCheckout')->__('Please fill in your phone number.');
-            Mage::getSingleton('core/session')->addError($msg);
+            $this->setErrorMessage($quote, $msg);
             return false;
         }
         
@@ -63,17 +63,29 @@ class Avenla_KlarnaCheckout_Model_Validator extends Mage_Core_Model_Abstract
             
             if (!$quote->isVirtual() && (!$method || !$rate)){
                 $msg = Mage::helper('sales')->__('Please specify a shipping method.');
-                Mage::getSingleton('core/session')->addError($msg);
+                $this->setErrorMessage($quote, $msg);
                 return false;
             }
 
             if($quote->getShippingAddress()->getPostcode() != $ko->shipping_address->postal_code){
                 $msg = Mage::helper('klarnaCheckout')->__('Please use the same post code for your quote and Klarna.');
-                Mage::getSingleton('core/session')->addError($msg);
+                $this->setErrorMessage($quote, $msg);
                 return false;
             }
         }
         
         return true;
+    }
+
+    /**
+     *  Set error message to quote payment data
+     *
+     *  @param  Mage_Sales_Model_Quote
+     *  @param  string
+     */
+    private function setErrorMessage($quote, $message)
+    {
+        $quote->getPayment()->setAdditionalInformation("kco_validation_message", $message);
+        $quote->getPayment()->save();
     }
 }

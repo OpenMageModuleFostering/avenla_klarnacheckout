@@ -217,8 +217,12 @@ class Avenla_KlarnaCheckout_Model_Order_Abstract extends Mage_Core_Model_Abstrac
 		$quote = Mage::getModel("sales/quote")->load($quoteId);
 		$ko = $this->order;
 
-		if($quote->getCustomerIsGuest())
-			$quote->setCustomerEmail($ko['billing_address']['email'])->save();
+		if($quote->getCustomerIsGuest()){
+			$quote->setCustomerEmail($ko['billing_address']['email']);
+			$quote->setCustomerFirstname($ko['billing_address']['given_name']);
+            $quote->setCustomerLastname($ko['billing_address']['family_name']);
+            $quote->save();
+		}
 
 		$quote->getBillingAddress()->addData($this->convertAddress($ko['billing_address']));
 		$quote->getShippingAddress()->addData($this->convertAddress($ko['shipping_address']));

@@ -126,6 +126,6 @@ class UserAgent implements UserAgentInterface
             ->setField('Library', static::NAME, static::VERSION, $options)
             ->setField('OS', php_uname('s'), php_uname('r'))
             ->setField('Language', 'PHP', phpversion())
-            ->setField('Module', 'KlarnaCheckout.MagentoModule', '1.2.0');
+            ->setField('Module', 'KlarnaCheckout.MagentoModule', '1.2.1');
     }
 }

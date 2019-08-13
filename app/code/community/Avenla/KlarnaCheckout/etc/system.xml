@@ -219,7 +219,7 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</pp_layout>
-						<update_pclass translate="button_label">
+						<!--update_pclass translate="button_label">
 							<depends><api>2</api></depends>
 							<label></label>
 							<button_label>Update Pclasses</button_label>
@@ -228,7 +228,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-						</update_pclass>
+						</update_pclass-->
 						<show_newsletter translate="label">
 							<label>Show newsletter subscription checkbox</label>
 							<frontend_type>select</frontend_type>

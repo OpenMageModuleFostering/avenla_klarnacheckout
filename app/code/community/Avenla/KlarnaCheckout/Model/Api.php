@@ -38,8 +38,8 @@ class Avenla_KlarnaCheckout_Model_Api extends Mage_Core_Model_Abstract
 		
         try{
             $this->klarna->config(
-                $config->getKlarnaEid(),
-                $config->getKlarnaSharedSecret(),
+                '645', //$config->getKlarnaEid(),
+                'W7LcGpIMfs28cTJ', //$config->getKlarnaSharedSecret(),
                 $locale['country'],
                 $locale['language'],
                 $locale['currency'],

@@ -29,6 +29,7 @@ class Avenla_KlarnaCheckout_Model_Config extends Varien_Object
     const LICENSE_URL         	= 'http://productdownloads.avenla.com/magento-modules/klarna-checkout/license';
     const ANALYTICS_UNIVERSAL 	= 'universal';
     const ANALYTICS_CLASSIC 	= 'analytics';
+    const DOCUMENTATION_URL     = 'http://productdownloads.avenla.com/magento-modules/klarna-checkout#documentation';
 	
     /**
      *  Return config var

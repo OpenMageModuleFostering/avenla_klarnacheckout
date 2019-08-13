@@ -24,6 +24,10 @@
 	<div style="padding:10px;background-color:#fff;border:1px solid #ddd;margin-bottom:7px;">
 		<img src="<?php echo $logoSrc; ?>" alt="Klarna Checkout" />
 		<a href="<?php echo $apiLink; ?>" target="_blank" style="float:right;"><?php echo $this->__('Klarna API Documentation'); ?></a>
+		<a href="<?php echo $documentationUrl; ?>" target="_blank" style="float: right;clear: both;margin-top: 10px;">
+			<?php echo $this->__('Avenla Klarna Checkout module documentation'); ?>
+		</a>
+			
 		<div class="infoContent">
 			<?php
 				$alerts = $this->getAlerts();

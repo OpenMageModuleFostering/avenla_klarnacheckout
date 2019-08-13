@@ -26,7 +26,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
 	private $helper;
 	private $quote;
 	private $config;
-	private $cart = array();
+	private $cart;
 	private $dummy = false;
 	public  $connector;    
 	public  $order;
@@ -186,6 +186,7 @@ class Avenla_KlarnaCheckout_Model_Order extends Klarna_Checkout_Order
      */
 	private function addProductsToCart()
 	{
+        $this->cart = array();
         $mCart = $this->quote->getAllVisibleItems();
         
         if(count($mCart) > 0){

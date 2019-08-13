@@ -185,4 +185,14 @@ class Avenla_KlarnaCheckout_Helper_Data extends Mage_Core_Helper_Data
                 return 'fi-fi';
         }
     }
+
+    /**
+     * Get url for module documentation
+     * 
+     * @return string
+     */
+    public function getDocumentationUrl()
+    {
+        return Avenla_KlarnaCheckout_Model_Config::DOCUMENTATION_URL;
+    }
 }

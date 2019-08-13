@@ -35,6 +35,7 @@ class Avenla_KlarnaCheckout_Block_Adminhtml_System_Config_Fieldset_Info extends 
         $this->helper = Mage::helper("klarnaCheckout");
         $this->assign('logoSrc', $this->helper->getLogoSrc());
         $this->assign('apiLink', Mage::helper('klarnaCheckout/api')->getApiDocumentationUrl());
+        $this->assign('documentationUrl', $this->helper->getDocumentationUrl());
         
         return $this->toHtml();
     }
